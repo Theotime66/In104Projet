@@ -1,26 +1,19 @@
+#include <SDL2/SDL_timer.h>
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 int main(int argc, char *argv[])
 {
-    SDL_Window *window = NULL;
-    if(0 != SDL_Init(SDL_INIT_VIDEO))
-    {
-        fprintf(stderr, "Erreur SDL_Init : %s", SDL_GetError());
-        return EXIT_FAILURE;
+    if (SDL_Init(SDL_INIT_AUDIO) != 0){
+        printf("error%s\n",SDL_GetError());
     }
-    window = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                              640, 480, SDL_WINDOW_FULLSCREEN_DESKTOP);
-    if(NULL == window)
+    SDL_Window *win = SDL_CreateWindow ("GAME",
+    SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1000,1000,0);
+    while (1)
     {
-        fprintf(stderr, "Erreur SDL_CreateWindow : %s", SDL_GetError());
-        return EXIT_FAILURE;
+        ;
     }
-    /* On agit sur la fenêtre ici */
-    printf("OK\n");
-    SDL_Delay(3000);
-    SDL_Quit();
-return EXIT_SUCCESS;
+    return 0;
+    
 }
-
