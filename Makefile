@@ -1,13 +1,14 @@
 CC=gcc
-CFLAGS=-Wall -Wfatal-error
-INC=-I include/
-SRC=src/
-EXEC=main
-all: $(EXEC)
-main: $(SRC)main.c $(SRC)article.o
-	$(CC) $(INC) -o $(SRC)$@ $^ $(CFLAGS)
+CFLAGS=-I.
 
-$(SRC)%.o : $(SRC)%.c
-	$(CC) $(INC) -o $@ -c $< $(CFLAGS)
+mon_programme: main.o moteur_jeu.o
+	$(CC) -o mon_programme main.o moteur_jeu.o
+
+main.o: main.c moteur_jeu.h
+	$(CC) -c main.c
+
+moteur_jeu.o: moteur_jeu.c moteur_jeu.h
+	$(CC) -c moteur_jeu.c
+
 clean:
-	rm -rf $(SRC)*.o
+	rm -f *.o mon_programme
