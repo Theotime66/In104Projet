@@ -60,22 +60,39 @@ void map_avec_fichier (char* nom_fichier, map_t* map){
 }
 
 void init_joueur(int nb_joueurs, char* nom_fichier){
-    // on récupère les positions initiales des joeurs dans le fichier
+    
     joueur_t joueur[nb_joueurs];
+    // on récupère les positions initiales des joeurs dans le fichier
+    int pos_init[nb_joueurs][2];
+    FILE* file = fopen(nom_fichier, "r");
+    if (file == NULL) {
+        printf("Impossible d'ouvrir le fichier.\n");
+        exit(1);
+    }
+    fscanf(file);
+    fscanf(file,"%d", &nb_j);
 
-    for(int i=1, i<= nb_joueurs, ++i){
+    if(nb_joueurs!= nb_j){
+        printf("Pas le bon nombre de joueurs.\n");
+        exit(1);
+    }
+
+    fclose(file);
+
+
+    for(int i=1; i<= nb_joueurs; ++i){
         
-        joueur[i]->skin=i;
-        joueur[i]->nb_bombes=2;
-        joueur[i]->nb_vies=5;
-        joueur[i]->vitesse=1;
+        joueur[i].skin=i;
+        joueur[i].nb_bombes=2;
+        joueur[i].nb_vies=5;
+        joueur[i].vitesse=1;
 
-        pos_t position_init_i;
+        pos_t position_init[i];
 
-        position_init[i]->x=position_init[i][1];
-        position_init[i]->y=position_init[i][2];
+        position_init[i].x=pos_init[i][1];
+        position_init[i].y=pos_init[i][2];
 
-        joueur[i]->position_joueur= position_init_i;
+        joueur[i].position_joueur= position_init[i];
 
 
     }
