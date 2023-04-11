@@ -86,19 +86,15 @@ void init_joueur(int nb_joueurs, char* nom_fichier){
         printf("Impossible d'ouvrir le fichier.\n");
         exit(1);
     }
-    int taille_carte;
-    fscanf(file,"%d",&taille_carte);
-    int nb_j;
+    int taille_map; int nb_j;
+    fscanf(file,"%d", &taille_map);
     fscanf(file,"%d", &nb_j);
-
+    
     if(nb_joueurs!= nb_j){
         printf("Pas le bon nombre de joueurs.\n");
         exit(1);
     }
-
-    fclose(file);
-
-
+    
     for(int i=1; i<= nb_joueurs; ++i){
         
         joueur[i].skin=i;
@@ -107,12 +103,11 @@ void init_joueur(int nb_joueurs, char* nom_fichier){
         joueur[i].vitesse=1;
 
         pos_t position_init[i];
+        fscanf(file,"%d",position_init[i].x);
+        fscanf(file,"%d",position_init[i].y);
 
-        position_init[i].x=pos_init[i][1];
-        position_init[i].y=pos_init[i][2];
 
         joueur[i].position_joueur= position_init[i];
-
-
     }
+    fclose(file);
 }
