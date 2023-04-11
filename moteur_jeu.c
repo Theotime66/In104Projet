@@ -40,17 +40,33 @@ void affichage_carte(map_t carte){
 /* Fonction d'acquisition de carte à partir de fichier txt*/
 void map_avec_fichier (char* nom_fichier, map_t* map){
 
-    int taille_map;
-
     FILE* file = fopen(nom_fichier, "r");
     if (file == NULL) {
         printf("Impossible d'ouvrir le fichier.\n");
         exit(1);
     }
+
+    int taille_map;
     fscanf(file, "%d", &taille_map);
+
+    int nombre_joueurs;
+    fscanf(file, "%d", &nombre_joueurs);
+
+    joueur_t joueur [nombre_joueurs];
+    int x;
+    int y;
+    for (int k = 0; k<nombre_joueurs; k++){
+        fscanf(file, "%d", &x); 
+        fscanf(file, "%d", &y);
+
+        joueur[k].position_joueur.x = x;
+        joueur[k].position_joueur.y = y;
+    }
+
 
     for (int i = 0; i < taille_map; i++) {
         for (int j = 0; j < taille_map; j++) {
+            printf("i=%d,j=%d\n",i,j);
             fscanf(file, "%d", &map->cases[i][j]);
         }
     }
@@ -58,6 +74,7 @@ void map_avec_fichier (char* nom_fichier, map_t* map){
     fclose(file);
     map->taille_map = taille_map;
 }
+
 
 void init_joueur(int nb_joueurs, char* nom_fichier){
     
@@ -69,7 +86,9 @@ void init_joueur(int nb_joueurs, char* nom_fichier){
         printf("Impossible d'ouvrir le fichier.\n");
         exit(1);
     }
-    fscanf(file);
+    int taille_carte;
+    fscanf(file,"%d",&taille_carte);
+    int nb_j;
     fscanf(file,"%d", &nb_j);
 
     if(nb_joueurs!= nb_j){

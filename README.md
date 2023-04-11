@@ -11,3 +11,11 @@ Convensions utilitées pour le remplissage des cases :
 40 : BOMBES skin et explosion
 
 50 :
+
+
+Composition du fichier .txt :
+
+taille carte
+nombre de joueurs
+position initiale de chaque joueur (rep)
+carte
