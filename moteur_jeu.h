@@ -1,4 +1,4 @@
-#define TAILLE_MAP 7
+#define TAILLE_MAP 8
 int taille_map = TAILLE_MAP;
 
 typedef struct map {
