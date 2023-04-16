@@ -39,6 +39,7 @@ void affichage_carte(map_t carte){
 
 /* Fonction d'acquisition de carte à partir de fichier txt*/
 void map_avec_fichier (char* nom_fichier, map_t* map){
+    //Permet d'acquérir : taille map, nombre de joueur, position de chaque joueur, carte (cases)
 
     FILE* file = fopen(nom_fichier, "r");
     if (file == NULL) {
@@ -49,27 +50,42 @@ void map_avec_fichier (char* nom_fichier, map_t* map){
     int taille_map;
     fscanf(file, "%d", &taille_map);
 
+
+
     int nombre_joueurs;
     fscanf(file, "%d", &nombre_joueurs);
 
     joueur_t joueur [nombre_joueurs];
     int x;
     int y;
+    int skin;
     for (int k = 0; k<nombre_joueurs; k++){
         fscanf(file, "%d", &x); 
         fscanf(file, "%d", &y);
+        fscanf(file, "%d", &skin);
 
         joueur[k].position_joueur.x = x;
         joueur[k].position_joueur.y = y;
+        joueur[k].skin = skin;
     }
 
-
+    //Initialisation de la carte
     for (int i = 0; i < taille_map; i++) {
         for (int j = 0; j < taille_map; j++) {
             //printf("i=%d,j=%d\n",i,j);
             fscanf(file, "%d", &map->cases[i][j]);
         }
     }
+
+    //Initialisation du joueur sur la carte
+    for (int k = 0; k<nombre_joueurs; k++){
+        x = joueur[k].position_joueur.x;
+        y = joueur[k].position_joueur.y;
+        skin = joueur[k].skin;
+
+        map->cases[x][y] = skin;
+    }
+
 
     fclose(file);
     map->taille_map = taille_map;
