@@ -1,7 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <SDL2/SDL.h>
+
 
 #define TAILLE_MAP 14
+const int WINDOW_WIDTH = 640;
+const int WINDOW_HEIGHT = 480;
+const int PLAYER_WIDTH = 40;
+const int PLAYER_HEIGHT = 40;
+
 
 
 typedef struct map {
@@ -106,12 +113,12 @@ void init_joueur(int nb_joueurs, char* nom_fichier){
     fscanf(file,"%d", &taille_map);
     fscanf(file,"%d", &nb_j);
     
-    if(nb_joueurs!= nb_j){
+    if(nb_joueurs != nb_j){
         printf("Pas le bon nombre de joueurs.\n");
         exit(1);
     }
     
-    for(int i=1; i<= nb_joueurs; ++i){
+    for(int i=0; i< nb_joueurs; ++i){
         
         joueur[i].skin=i;
         joueur[i].nb_bombes=2;
@@ -126,4 +133,71 @@ void init_joueur(int nb_joueurs, char* nom_fichier){
         joueur[i].position_joueur= position_init[i];
     }
     fclose(file);
+}
+
+void affichage_jeu(){
+    // Initialiser SDL
+    SDL_Init(SDL_INIT_VIDEO);
+
+    // Créer la fenêtre
+    SDL_Window* window = SDL_CreateWindow("Jeu vidéo", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
+
+    // Créer le rendu de la fenêtre
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    // Charger l'image du joueur
+    SDL_Surface* playerSurface = SDL_LoadBMP("player.bmp");
+    SDL_Texture* playerTexture = SDL_CreateTextureFromSurface(renderer, playerSurface);
+
+    // Positionner le joueur au centre de la fenêtre
+    int playerX = (WINDOW_WIDTH - PLAYER_WIDTH) / 2;
+    int playerY = (WINDOW_HEIGHT - PLAYER_HEIGHT) / 2;
+
+    // Boucle de jeu
+    SDL_Event event;
+    int a_gagne = 0;       //a gagné sera par la suite calculé à partir de la fonction a_gagne()
+    while (a_gagne == 0) {
+        // Gérer les événements
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    a_gagne = 1;
+                    break;
+                case SDL_KEYDOWN:
+                    switch (event.key.keysym.sym) {
+                        case SDLK_LEFT:
+                            playerX -= 5;
+                            break;
+                        case SDLK_RIGHT:
+                            playerX += 5;
+                            break;
+                        case SDLK_UP:
+                            playerY -= 5;
+                            break;
+                        case SDLK_DOWN:
+                            playerY += 5;
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        // Effacer l'écran
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        // Afficher le joueur
+        SDL_Rect playerRect = { playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT };
+        SDL_RenderCopy(renderer, playerTexture, NULL, &playerRect);
+
+        // Mettre à jour l'écran
+        SDL_RenderPresent(renderer);
+    }
+
+    // Libérer les ressources
+    SDL_DestroyTexture(playerTexture);
+    SDL_FreeSurface(playerSurface);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <SDL2/SDL.h>
 #include "moteur_jeu.h"
 
 
@@ -21,6 +22,8 @@ int main(){
     map_avec_fichier ("carte_1.txt", &carte);
 
     affichage_carte(carte);
+
+    affichage_jeu();
 
     return 0;
 }
