@@ -1,8 +1,8 @@
 CC=gcc
-CFLAGS=-I.
+CFLAGS=-Wall -Wfatal-errors
 
 mon_programme: main.o moteur_jeu.o
-	$(CC) -o mon_programme main.o moteur_jeu.o
+	$(CC) $(CFLAGS) -o mon_programme main.o moteur_jeu.o
 
 main.o: main.c moteur_jeu.h
 	$(CC) -c main.c

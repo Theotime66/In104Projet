@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TAILLE_MAP 8
+#define TAILLE_MAP 14
 
 
 typedef struct map {
@@ -66,7 +66,7 @@ void map_avec_fichier (char* nom_fichier, map_t* map){
 
     for (int i = 0; i < taille_map; i++) {
         for (int j = 0; j < taille_map; j++) {
-            printf("i=%d,j=%d\n",i,j);
+            //printf("i=%d,j=%d\n",i,j);
             fscanf(file, "%d", &map->cases[i][j]);
         }
     }
@@ -103,8 +103,8 @@ void init_joueur(int nb_joueurs, char* nom_fichier){
         joueur[i].vitesse=1;
 
         pos_t position_init[i];
-        fscanf(file,"%d",position_init[i].x);
-        fscanf(file,"%d",position_init[i].y);
+        fscanf(file,"%d",&position_init[i].x);
+        fscanf(file,"%d",&position_init[i].y);
 
 
         joueur[i].position_joueur= position_init[i];
