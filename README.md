@@ -17,5 +17,5 @@ Composition du fichier .txt :
 
 taille carte
 nombre de joueurs
-position initiale de chaque joueur (rep)
+position initiale de chaque joueur (rep) + skin du joueur
 carte
