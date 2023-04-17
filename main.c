@@ -23,7 +23,7 @@ int main(){
 
     affichage_carte(carte);
 
-    affichage_jeu();
+    affichage_jeu(carte);
 
     return 0;
 }

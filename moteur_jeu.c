@@ -4,11 +4,10 @@
 
 
 #define TAILLE_MAP 14
-const int WINDOW_WIDTH = 640;
-const int WINDOW_HEIGHT = 480;
-const int PLAYER_WIDTH = 40;
-const int PLAYER_HEIGHT = 40;
-
+const int WINDOW_WIDTH = 994;
+const int WINDOW_HEIGHT = 994;
+const int PLAYER_WIDTH = 71;
+const int PLAYER_HEIGHT = 71;
 
 
 typedef struct map {
@@ -135,7 +134,11 @@ void init_joueur(int nb_joueurs, char* nom_fichier){
     fclose(file);
 }
 
-void affichage_jeu(){
+void affichage_jeu(map_t carte){
+    //Initialisation de cases
+    int taille_map = carte.taille_map;
+
+
     // Initialiser SDL
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -149,19 +152,32 @@ void affichage_jeu(){
     SDL_Surface* playerSurface = SDL_LoadBMP("player.bmp");
     SDL_Texture* playerTexture = SDL_CreateTextureFromSurface(renderer, playerSurface);
 
+    // Charger les images des cases
+    SDL_Surface* grassSurface = SDL_LoadBMP("texture_herbe.bmp");
+    SDL_Texture* grassTexture = SDL_CreateTextureFromSurface(renderer, grassSurface);
+    SDL_Surface* wallSurface = SDL_LoadBMP("texture_mur.bmp");
+    SDL_Texture* wallTexture = SDL_CreateTextureFromSurface(renderer, wallSurface);
+
+    
+    // Charger l'image de l'arrière-plan
+    SDL_Surface* backgroundSurface = SDL_LoadBMP("background.bmp");
+    SDL_Texture* backgroundTexture = SDL_CreateTextureFromSurface(renderer, backgroundSurface);
+    SDL_Rect backgroundRect = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
+
     // Positionner le joueur au centre de la fenêtre
-    int playerX = (WINDOW_WIDTH - PLAYER_WIDTH) / 2;
+    //int playerX = (WINDOW_WIDTH - PLAYER_WIDTH) / 2;
+    int playerX = 700;
     int playerY = (WINDOW_HEIGHT - PLAYER_HEIGHT) / 2;
 
     // Boucle de jeu
     SDL_Event event;
-    int a_gagne = 0;       //a gagné sera par la suite calculé à partir de la fonction a_gagne()
-    while (a_gagne == 0) {
+    int quit = 0;
+    while (!quit) {
         // Gérer les événements
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
-                    a_gagne = 1;
+                    quit = 1;
                     break;
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym) {
@@ -182,9 +198,20 @@ void affichage_jeu(){
             }
         }
 
-        // Effacer l'écran
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
+        //// Afficher l'arrière-plan
+        SDL_RenderCopy(renderer, backgroundTexture, NULL, &backgroundRect);
+
+        // Afficher les cases de la carte
+        for (int i = 0; i < taille_map; i++) {
+            for (int j = 0; j < taille_map; j++) {
+                SDL_Rect caseRect = { j * 71, i * 71, 71, 71 }; // taille d'une case est 32x32 pixels
+                if (carte.cases[i][j] == 0) {
+                    SDL_RenderCopy(renderer, grassTexture, NULL, &caseRect);
+                } else {
+                    SDL_RenderCopy(renderer, wallTexture, NULL, &caseRect);
+                }
+            }
+        }
 
         // Afficher le joueur
         SDL_Rect playerRect = { playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT };
@@ -195,6 +222,8 @@ void affichage_jeu(){
     }
 
     // Libérer les ressources
+    SDL_DestroyTexture(backgroundTexture);
+    SDL_FreeSurface(backgroundSurface);
     SDL_DestroyTexture(playerTexture);
     SDL_FreeSurface(playerSurface);
     SDL_DestroyRenderer(renderer);

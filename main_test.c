@@ -1,9 +1,27 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 
-// Compilation : gcc -o jeu_video jeu_video.c -lSDL2
+// Compilation : gcc -o jeu_video main_test.c -lSDL2
+
+const int WINDOW_WIDTH = 994;
+const int WINDOW_HEIGHT = 994;
+const int PLAYER_WIDTH = 71;
+const int PLAYER_HEIGHT = 71;
 
 int main(int argc, char* args[]) {
+    //Initialisation de cases
+    //Création d'une map test pour l'afficher
+    int taille_map = 14;
+
+    //Initialisation de toutes les cases à 1
+    int cases[taille_map][taille_map];
+    for (int i = 0; i < taille_map; i++) {
+        for (int j = 0; j < taille_map; j++) {
+            cases[i][j] = 1;
+        }
+    }
+
+
     // Initialiser SDL
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -17,8 +35,21 @@ int main(int argc, char* args[]) {
     SDL_Surface* playerSurface = SDL_LoadBMP("player.bmp");
     SDL_Texture* playerTexture = SDL_CreateTextureFromSurface(renderer, playerSurface);
 
+    // Charger les images des cases
+    SDL_Surface* grassSurface = SDL_LoadBMP("texture_herbe.bmp");
+    SDL_Texture* grassTexture = SDL_CreateTextureFromSurface(renderer, grassSurface);
+    SDL_Surface* wallSurface = SDL_LoadBMP("texture_mur.bmp");
+    SDL_Texture* wallTexture = SDL_CreateTextureFromSurface(renderer, wallSurface);
+
+    
+    // Charger l'image de l'arrière-plan
+    SDL_Surface* backgroundSurface = SDL_LoadBMP("background.bmp");
+    SDL_Texture* backgroundTexture = SDL_CreateTextureFromSurface(renderer, backgroundSurface);
+    SDL_Rect backgroundRect = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
+
     // Positionner le joueur au centre de la fenêtre
-    int playerX = (WINDOW_WIDTH - PLAYER_WIDTH) / 2;
+    //int playerX = (WINDOW_WIDTH - PLAYER_WIDTH) / 2;
+    int playerX = 700;
     int playerY = (WINDOW_HEIGHT - PLAYER_HEIGHT) / 2;
 
     // Boucle de jeu
@@ -50,9 +81,20 @@ int main(int argc, char* args[]) {
             }
         }
 
-        // Effacer l'écran
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
+        //// Afficher l'arrière-plan
+        SDL_RenderCopy(renderer, backgroundTexture, NULL, &backgroundRect);
+
+        // Afficher les cases de la carte
+        for (int i = 0; i < taille_map; i++) {
+            for (int j = 0; j < taille_map; j++) {
+                SDL_Rect caseRect = { j * 32, i * 32, 32, 32 }; // taille d'une case est 32x32 pixels
+                if (cases[i][j] == 0) {
+                    SDL_RenderCopy(renderer, grassTexture, NULL, &caseRect);
+                } else {
+                    SDL_RenderCopy(renderer, wallTexture, NULL, &caseRect);
+                }
+            }
+        }
 
         // Afficher le joueur
         SDL_Rect playerRect = { playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT };
@@ -63,6 +105,8 @@ int main(int argc, char* args[]) {
     }
 
     // Libérer les ressources
+    SDL_DestroyTexture(backgroundTexture);
+    SDL_FreeSurface(backgroundSurface);
     SDL_DestroyTexture(playerTexture);
     SDL_FreeSurface(playerSurface);
     SDL_DestroyRenderer(renderer);
