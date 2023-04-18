@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-Wall -Wfatal-errors
 
 mon_programme: main.o moteur_jeu.o
-	$(CC) $(CFLAGS) -o mon_programme main.o moteur_jeu.o -lSDL2
+	$(CC) $(CFLAGS) -o mon_programme main.o moteur_jeu.o -lSDL2 -lm
 
 main.o: main.c moteur_jeu.h
 	$(CC) -c main.c

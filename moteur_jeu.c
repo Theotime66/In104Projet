@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <SDL2/SDL.h>
 
 
@@ -15,14 +16,19 @@ typedef struct map {
     int cases[TAILLE_MAP][TAILLE_MAP];
 } map_t;
 
-typedef struct position {
+typedef struct position_xy {
     int x;
     int y;
-} pos_t;
+} pos_xy_t;
+
+typedef struct position_ij {
+    int i;
+    int j;
+} pos_ij_t;
 
 typedef struct joueur{
     int skin;
-    pos_t position_joueur;
+    pos_xy_t position_joueur;
     int nb_bombes;
     int nb_vies;
     int vitesse;
@@ -125,7 +131,7 @@ joueur_t* init_joueur(int nb_joueurs, char* nom_fichier){
         joueur[i].nb_vies=5;
         joueur[i].vitesse=1;
 
-        pos_t position_init[i];
+        pos_xy_t position_init[i];
         fscanf(file,"%d",&position_init[i].x);
         fscanf(file,"%d",&position_init[i].y);
 
@@ -234,3 +240,27 @@ void affichage_jeu(map_t carte){
 }
 
 
+pos_ij_t transformation_xy_ij (pos_xy_t position_xy){
+    //Fonction permettant de transformer les coordonnées x y (sur la carte) en coordonnées i j (dans la matrice)
+    float x = position_xy.x;
+    float y = position_xy.y;
+
+    int i = floor(x);
+    int j = floor(y);
+
+    pos_ij_t position_ij = {i, j};
+    return position_ij;
+}
+
+pos_xy_t transformation_ij_xy (pos_ij_t position_ij){
+    //Fonction permettant de transformer les coordonnées i j (dans la matrice) en coordonnées x y (sur la carte)
+    //Remarque : cette fonction retourne le centre de la case
+    int i = position_ij.i;
+    int j = position_ij.j;
+
+    float x = i*71 + 36;
+    float y = j*71 + 36;
+
+    pos_xy_t position_xy = {x, y};
+    return position_xy;
+}
