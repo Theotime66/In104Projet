@@ -3,12 +3,17 @@
 Convensions utilitées pour le remplissage des cases :
 
 10 : MUR skin de mur
+    1 : Mur classique
+    11 : Mur incassable
 
 20 : 
 
 30 : PLAYER skin du personnage
 
 40 : BOMBES skin et explosion
+    41 : Bombe 1 (petite)
+    42 : Bombe 2 (moyenne)
+    43 : Bombe 3 (grande)
 
 50 :
 

@@ -156,15 +156,38 @@ void affichage_jeu(map_t carte){
     // Créer le rendu de la fenêtre
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    // Charger l'image du joueur
-    SDL_Surface* playerSurface = SDL_LoadBMP("player.bmp");
-    SDL_Texture* playerTexture = SDL_CreateTextureFromSurface(renderer, playerSurface);
+    /* JOUEURS */
+    // Charger l'image du joueur 1 avec transparence
+    SDL_Surface* playerSurface1 = SDL_LoadBMP("player.bmp");
+    SDL_SetColorKey(playerSurface1, SDL_TRUE, SDL_MapRGB(playerSurface1->format, 0, 134.0, 53.0));
+    SDL_Texture* playerTexture1 = SDL_CreateTextureFromSurface(renderer, playerSurface1);
+    // Charger l'image du joueur 2 avec transparence
+    SDL_Surface* playerSurface2 = SDL_LoadBMP("skin2.bmp");
+    SDL_SetColorKey(playerSurface2, SDL_TRUE, SDL_MapRGB(playerSurface2->format, 0, 134.0, 53.0));
+    SDL_Texture* playerTexture2 = SDL_CreateTextureFromSurface(renderer, playerSurface2);
 
+    /* BOMBES */
+    //Bombe 1
+    SDL_Surface* bombeSurface1 = SDL_LoadBMP("bombe1.bmp");
+    SDL_SetColorKey(bombeSurface1, SDL_TRUE, SDL_MapRGB(bombeSurface1->format, 255, 0, 255));
+    SDL_Texture* bombeTexture1 = SDL_CreateTextureFromSurface(renderer, bombeSurface1);
+    //Bombe 2
+    SDL_Surface* bombeSurface2 = SDL_LoadBMP("bombe2.bmp");
+    SDL_SetColorKey(bombeSurface2, SDL_TRUE, SDL_MapRGB(bombeSurface2->format, 255, 0, 255));
+    SDL_Texture* bombeTexture2 = SDL_CreateTextureFromSurface(renderer, bombeSurface2);
+    //Bombe 3
+    SDL_Surface* bombeSurface3 = SDL_LoadBMP("bombe3.bmp");
+    SDL_SetColorKey(bombeSurface3, SDL_TRUE, SDL_MapRGB(bombeSurface3->format, 255, 0, 255));
+    SDL_Texture* bombeTexture3 = SDL_CreateTextureFromSurface(renderer, bombeSurface3);
+
+    /* CASES */
     // Charger les images des cases
     //SDL_Surface* grassSurface = SDL_LoadBMP("texture_herbe.bmp");
     //SDL_Texture* grassTexture = SDL_CreateTextureFromSurface(renderer, grassSurface);
     SDL_Surface* wallSurface = SDL_LoadBMP("texture_mur.bmp");
     SDL_Texture* wallTexture = SDL_CreateTextureFromSurface(renderer, wallSurface);
+    SDL_Surface* wallUnbreakableSurface = SDL_LoadBMP("texture_mur_incassable.bmp");
+    SDL_Texture* wallUnbreakableTexture = SDL_CreateTextureFromSurface(renderer, wallUnbreakableSurface);
 
     
     // Charger l'image de l'arrière-plan
@@ -172,10 +195,15 @@ void affichage_jeu(map_t carte){
     SDL_Texture* backgroundTexture = SDL_CreateTextureFromSurface(renderer, backgroundSurface);
     SDL_Rect backgroundRect = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
 
+    /* POSITIONS */
     // Positionner le joueur au centre de la fenêtre
-    int playerX = (WINDOW_WIDTH - PLAYER_WIDTH) / 2;
+    int player1X = (WINDOW_WIDTH - PLAYER_WIDTH) / 2;
     //int playerX = 700;
-    int playerY = (WINDOW_HEIGHT - PLAYER_HEIGHT) / 2;
+    int player1Y = (WINDOW_HEIGHT - PLAYER_HEIGHT) / 2;
+    //Joueur 2
+    int player2X = 200;
+    int player2Y = 200;
+
 
     // Boucle de jeu
     SDL_Event event;
@@ -190,16 +218,16 @@ void affichage_jeu(map_t carte){
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym) {
                         case SDLK_LEFT:
-                            playerX -= 5;
+                            player1X -= 5;
                             break;
                         case SDLK_RIGHT:
-                            playerX += 5;
+                            player1X += 5;
                             break;
                         case SDLK_UP:
-                            playerY -= 5;
+                            player1Y -= 5;
                             break;
                         case SDLK_DOWN:
-                            playerY += 5;
+                            player1Y += 5;
                             break;
                     }
                     break;
@@ -215,15 +243,31 @@ void affichage_jeu(map_t carte){
                 SDL_Rect caseRect = { j * 71, i * 71, 71, 71 }; // taille d'une case est 32x32 pixels
                 if (carte.cases[i][j] == 0) {
                     //SDL_RenderCopy(renderer, grassTexture, NULL, &caseRect);
-                } else {
+                //Affichage des murs
+                } else if (carte.cases[i][j] == 1) {
                     SDL_RenderCopy(renderer, wallTexture, NULL, &caseRect);
+                }
+                else if (carte.cases[i][j] == 11) {
+                    SDL_RenderCopy(renderer, wallUnbreakableTexture, NULL, &caseRect);
+                }
+                else if (carte.cases[i][j] == 41){
+                    SDL_RenderCopy(renderer, bombeTexture1, NULL, &caseRect);
+                }
+                else if (carte.cases[i][j] == 42){
+                    SDL_RenderCopy(renderer, bombeTexture2, NULL, &caseRect);
+                }
+                else if (carte.cases[i][j] == 43){
+                    SDL_RenderCopy(renderer, bombeTexture3, NULL, &caseRect);
                 }
             }
         }
 
         // Afficher le joueur
-        SDL_Rect playerRect = { playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT };
-        SDL_RenderCopy(renderer, playerTexture, NULL, &playerRect);
+        SDL_Rect playerRect1 = { player1X, player1Y, PLAYER_WIDTH, PLAYER_HEIGHT };
+        SDL_RenderCopy(renderer, playerTexture1, NULL, &playerRect1);
+        SDL_Rect playerRect2 = { player2X, player2Y, PLAYER_WIDTH, PLAYER_HEIGHT };
+        SDL_RenderCopy(renderer, playerTexture2, NULL, &playerRect2);
+
 
         // Mettre à jour l'écran
         SDL_RenderPresent(renderer);
@@ -232,12 +276,15 @@ void affichage_jeu(map_t carte){
     // Libérer les ressources
     SDL_DestroyTexture(backgroundTexture);
     SDL_FreeSurface(backgroundSurface);
-    SDL_DestroyTexture(playerTexture);
-    SDL_FreeSurface(playerSurface);
+    SDL_DestroyTexture(playerTexture1);
+    SDL_DestroyTexture(playerTexture2);
+    SDL_FreeSurface(playerSurface1);
+    SDL_FreeSurface(playerSurface2);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
+
 
 
 pos_ij_t transformation_xy_ij (pos_xy_t position_xy){
