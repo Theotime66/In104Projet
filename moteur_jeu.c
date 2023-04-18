@@ -98,7 +98,7 @@ void map_avec_fichier (char* nom_fichier, map_t* map){
 }
 
 
-joueur_t init_joueur(int nb_joueurs, char* nom_fichier){
+joueur_t* init_joueur(int nb_joueurs, char* nom_fichier){
     
     joueur_t joueur[nb_joueurs];
     
@@ -126,8 +126,8 @@ joueur_t init_joueur(int nb_joueurs, char* nom_fichier){
         joueur[i].vitesse=1;
 
         pos_t position_init[i];
-        fscanf(file,"%d",position_init[i].x);
-        fscanf(file,"%d",position_init[i].y);
+        fscanf(file,"%d",&position_init[i].x);
+        fscanf(file,"%d",&position_init[i].y);
 
 
         joueur[i].position_joueur= position_init[i];
@@ -167,8 +167,8 @@ void affichage_jeu(map_t carte){
     SDL_Rect backgroundRect = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
 
     // Positionner le joueur au centre de la fenêtre
-    //int playerX = (WINDOW_WIDTH - PLAYER_WIDTH) / 2;
-    int playerX = 700;
+    int playerX = (WINDOW_WIDTH - PLAYER_WIDTH) / 2;
+    //int playerX = 700;
     int playerY = (WINDOW_HEIGHT - PLAYER_HEIGHT) / 2;
 
     // Boucle de jeu
@@ -232,3 +232,5 @@ void affichage_jeu(map_t carte){
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
+
+
