@@ -161,8 +161,8 @@ void affichage_jeu(map_t carte){
     SDL_Texture* playerTexture = SDL_CreateTextureFromSurface(renderer, playerSurface);
 
     // Charger les images des cases
-    SDL_Surface* grassSurface = SDL_LoadBMP("texture_herbe.bmp");
-    SDL_Texture* grassTexture = SDL_CreateTextureFromSurface(renderer, grassSurface);
+    //SDL_Surface* grassSurface = SDL_LoadBMP("texture_herbe.bmp");
+    //SDL_Texture* grassTexture = SDL_CreateTextureFromSurface(renderer, grassSurface);
     SDL_Surface* wallSurface = SDL_LoadBMP("texture_mur.bmp");
     SDL_Texture* wallTexture = SDL_CreateTextureFromSurface(renderer, wallSurface);
 
@@ -214,7 +214,7 @@ void affichage_jeu(map_t carte){
             for (int j = 0; j < taille_map; j++) {
                 SDL_Rect caseRect = { j * 71, i * 71, 71, 71 }; // taille d'une case est 32x32 pixels
                 if (carte.cases[i][j] == 0) {
-                    SDL_RenderCopy(renderer, grassTexture, NULL, &caseRect);
+                    //SDL_RenderCopy(renderer, grassTexture, NULL, &caseRect);
                 } else {
                     SDL_RenderCopy(renderer, wallTexture, NULL, &caseRect);
                 }
