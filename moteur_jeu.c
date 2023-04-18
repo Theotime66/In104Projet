@@ -98,9 +98,10 @@ void map_avec_fichier (char* nom_fichier, map_t* map){
 }
 
 
-void init_joueur(int nb_joueurs, char* nom_fichier){
+joueur_t init_joueur(int nb_joueurs, char* nom_fichier){
     
     joueur_t joueur[nb_joueurs];
+    
     // on récupère les positions initiales des joeurs dans le fichier
     int pos_init[nb_joueurs][2];
     FILE* file = fopen(nom_fichier, "r");
@@ -125,13 +126,14 @@ void init_joueur(int nb_joueurs, char* nom_fichier){
         joueur[i].vitesse=1;
 
         pos_t position_init[i];
-        fscanf(file,"%d",&position_init[i].x);
-        fscanf(file,"%d",&position_init[i].y);
+        fscanf(file,"%d",position_init[i].x);
+        fscanf(file,"%d",position_init[i].y);
 
 
         joueur[i].position_joueur= position_init[i];
     }
     fclose(file);
+    return(joueur);
 }
 
 void affichage_jeu(map_t carte){
