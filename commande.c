@@ -10,7 +10,7 @@ const int TAILLE_CHAR_AUTORISES = sizeof(CHAR_AUTORISES) / sizeof(CHAR_AUTORISES
 
 generic_queue_t commande(int win) {
     // Créer une nouvelle file
-    generic_queue_t *fifo = generic_queue_init();
+    generic_queue_t *fifo = generic_queue_init(); // peut être que la fifo doit être en argument est initialisée dans le main
 
     SDL_Event event;
     while (!win) {
