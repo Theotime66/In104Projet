@@ -25,5 +25,15 @@ int main(){
 
     affichage_jeu(carte);
 
+    pos_xy_t position = {250, 250};
+    joueur_t joueur = {
+        31,
+        position,
+        3,
+        3,
+        5,
+    };
+    printf("Affichage collision :%d\n",collision (joueur, carte, 'z'));
+
     return 0;
 }

@@ -24,3 +24,9 @@ taille carte
 nombre de joueurs
 position initiale de chaque joueur (rep) + skin du joueur
 carte
+
+Touches de déplacement :
+-> Joueur 1 
+z (up); q (left); s (down); d (right); capslock (bomb); leftshift (power)
+-> Joueur 2
+flèche_haut (up); flèche_gauche (left); flèche_bas (down); flèche_droite (right); l (bomb); : (power)

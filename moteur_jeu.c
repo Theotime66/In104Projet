@@ -34,6 +34,11 @@ typedef struct joueur{
     int vitesse;
 } joueur_t;
 
+//enum touches_autorisees {SDLK_q, SDLK_s, SDLK_d, SDLK_z, SDLK_l, SDLK_CAPSLOCK, SDLK_LSHIFT, SDLK_SEMICOLON, SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN};
+const int CHAR_AUTORISES[] = {SDLK_q, SDLK_s, SDLK_d, SDLK_z, SDLK_l, SDLK_CAPSLOCK, SDLK_LSHIFT, SDLK_SEMICOLON, SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN};
+
+
+
 /* Fonction d'affichage de la carte */
 void affichage_carte(map_t carte){
     //Programme permettant d'afficher la carte dans le terminale sous forme d'une "matrice"
@@ -106,8 +111,15 @@ void map_avec_fichier (char* nom_fichier, map_t* map){
 
 joueur_t* init_joueur(int nb_joueurs, char* nom_fichier){
     
-    joueur_t joueur[nb_joueurs];
+    // Allouer dynamiquement le tableau de joueurs
+    joueur_t* joueur = malloc(nb_joueurs * sizeof(joueur_t));
     
+    // Vérifier si l'allocation a réussi
+    if (joueur == NULL) {
+        printf("Erreur d'allocation de mémoire.\n");
+        exit(1);
+    }
+        
     // on récupère les positions initiales des joeurs dans le fichier
     int pos_init[nb_joueurs][2];
     FILE* file = fopen(nom_fichier, "r");
@@ -140,6 +152,90 @@ joueur_t* init_joueur(int nb_joueurs, char* nom_fichier){
     }
     fclose(file);
     return(joueur);
+}
+
+
+pos_ij_t transformation_xy_ij (pos_xy_t position_xy){
+    //Fonction permettant de transformer les coordonnées x y (sur la carte) en coordonnées i j (dans la matrice)
+    float x = position_xy.x;
+    float y = position_xy.y;
+
+    int i = floor(x);
+    int j = floor(y);
+
+    pos_ij_t position_ij = {i, j};
+    return position_ij;
+}
+
+pos_xy_t transformation_ij_xy (pos_ij_t position_ij){
+    //Fonction permettant de transformer les coordonnées i j (dans la matrice) en coordonnées x y (sur la carte)
+    //Remarque : cette fonction retourne le centre de la case
+    int i = position_ij.i;
+    int j = position_ij.j;
+
+    float x = i*71 + 36;
+    float y = j*71 + 36;
+
+    pos_xy_t position_xy = {x, y};
+    return position_xy;
+}
+
+int collision (joueur_t joueur, map_t map, int touche_pressee){
+    //Fonction permettant de géner les collisions dans le jeu.
+    //Fonctionnement : si la case dans la direction du déplacement est un 0 : pas de problème. On retourne 0
+    //Fonctionnement : si la case dans la direction du déplacement est autre chose que 0 : problème. On retourne 1. Le déplacement est annulé
+
+    int x_joueur = joueur.position_joueur.x;
+    int y_joueur = joueur.position_joueur.y;
+    pos_xy_t positionXY= {x_joueur, y_joueur};
+
+    pos_ij_t positionIJ = transformation_xy_ij(positionXY);
+    int i_joueur = positionIJ.i;
+    int j_joueur = positionIJ.j;
+
+    //Test de collision
+    //Déplacement vers le haut
+    if ((touche_pressee == SDLK_UP)||(touche_pressee == SDLK_z)){
+        if(map.cases[i_joueur][j_joueur - 1] == 0){
+            printf("Collision\n\n");
+            return 0;
+        }
+        else{
+            return 1;
+        }
+    }
+    //Déplacement vers le bas
+    else if ((touche_pressee == SDLK_DOWN)||(touche_pressee == SDLK_s)){
+        if(map.cases[i_joueur][j_joueur + 1] == 0){
+            return 0;
+        }
+        else{
+            return 1;
+        }
+    }
+    //Déplacement vers la gauche
+    else if ((touche_pressee == SDLK_LEFT)||(touche_pressee == SDLK_q)){
+        if(map.cases[i_joueur - 1][j_joueur] == 0){
+            return 0;
+        }
+        else{
+            return 1;
+        }
+    }
+    //Déplacement vers la droite
+    else if ((touche_pressee == SDLK_RIGHT)||(touche_pressee == SDLK_d)){
+        if(map.cases[i_joueur + 1][j_joueur] == 0){
+            return 0;
+        }
+        else{
+            return 1;
+        }
+    }
+    //Touche appuyée ne correspond pas à un déplacement
+    else {
+        return 0;
+    }
+
 }
 
 void affichage_jeu(map_t carte){
@@ -202,7 +298,17 @@ void affichage_jeu(map_t carte){
     int player1Y = (WINDOW_HEIGHT - PLAYER_HEIGHT) / 2;
     //Joueur 2
     int player2X = 200;
-    int player2Y = 200;
+    int player2Y = 50;
+
+    pos_xy_t position = {player2X, player2Y};
+    joueur_t joueur = {
+        31,
+        position,
+        3,
+        3,
+        5,
+    };
+    int k = 0;
 
 
     // Boucle de jeu
@@ -217,6 +323,7 @@ void affichage_jeu(map_t carte){
                     break;
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym) {
+                        //Joueur 2
                         case SDLK_LEFT:
                             player1X -= 5;
                             break;
@@ -229,10 +336,32 @@ void affichage_jeu(map_t carte){
                         case SDLK_DOWN:
                             player1Y += 5;
                             break;
+                        
+                        //Joueur 1
+                        case SDLK_q:
+                            player2X -= 5;
+                            break;
+                        case SDLK_d:
+                            player2X += 5;
+                            break;
+                        case SDLK_z:
+                            player2Y -= 5;
+                            break;
+                        case SDLK_s:
+                            player2Y += 5;
+                            break;
                     }
                     break;
             }
         }
+        int var = collision (joueur, carte, 'z');
+        k++;
+        printf("Affichage collision :%d numéro %d\n",var,k);
+        if (var == 0){
+            printf("COLLISION\n");
+            //quit;
+        }
+
 
         //// Afficher l'arrière-plan
         SDL_RenderCopy(renderer, backgroundTexture, NULL, &backgroundRect);
@@ -286,28 +415,3 @@ void affichage_jeu(map_t carte){
 }
 
 
-
-pos_ij_t transformation_xy_ij (pos_xy_t position_xy){
-    //Fonction permettant de transformer les coordonnées x y (sur la carte) en coordonnées i j (dans la matrice)
-    float x = position_xy.x;
-    float y = position_xy.y;
-
-    int i = floor(x);
-    int j = floor(y);
-
-    pos_ij_t position_ij = {i, j};
-    return position_ij;
-}
-
-pos_xy_t transformation_ij_xy (pos_ij_t position_ij){
-    //Fonction permettant de transformer les coordonnées i j (dans la matrice) en coordonnées x y (sur la carte)
-    //Remarque : cette fonction retourne le centre de la case
-    int i = position_ij.i;
-    int j = position_ij.j;
-
-    float x = i*71 + 36;
-    float y = j*71 + 36;
-
-    pos_xy_t position_xy = {x, y};
-    return position_xy;
-}
