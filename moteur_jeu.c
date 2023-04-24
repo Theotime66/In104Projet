@@ -197,6 +197,7 @@ void affichage_jeu(map_t carte){
 
     /* POSITIONS */
     // Positionner le joueur au centre de la fenêtre
+<<<<<<< Updated upstream
     int player1X = (WINDOW_WIDTH - PLAYER_WIDTH) / 2;
     //int playerX = 700;
     int player1Y = (WINDOW_HEIGHT - PLAYER_HEIGHT) / 2;
@@ -204,6 +205,11 @@ void affichage_jeu(map_t carte){
     int player2X = 200;
     int player2Y = 200;
 
+=======
+    int playerX = (WINDOW_WIDTH - PLAYER_WIDTH) / 2;
+    //int playerX = 700;
+    int playerY = (WINDOW_HEIGHT - PLAYER_HEIGHT) / 2;
+>>>>>>> Stashed changes
 
     // Boucle de jeu
     SDL_Event event;
@@ -286,7 +292,10 @@ void affichage_jeu(map_t carte){
 }
 
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 pos_ij_t transformation_xy_ij (pos_xy_t position_xy){
     //Fonction permettant de transformer les coordonnées x y (sur la carte) en coordonnées i j (dans la matrice)
     float x = position_xy.x;
@@ -310,4 +319,36 @@ pos_xy_t transformation_ij_xy (pos_ij_t position_ij){
 
     pos_xy_t position_xy = {x, y};
     return position_xy;
+}
+
+typedef struct bombe{
+    pos_xy_t pos_bombe;
+    int timer;
+} bomb_t;
+
+void est_mort(int nb_joueurs, joueur_t* joueurs, generic_queue_t** cmd /* la fifo*/){
+    for(int i=0; i<nb_joueurs; i++){
+        if(joueurs[i].nb_vies==0){
+            generic_queue_enqueue(*cmd,joueurs[i].skin 'dead');/*mettre dans la fifo cmdgraphique que le joueur i (définie par son skin) est mort pour faire l'animation */
+            for(int k=i; k<nb_joueurs-1 ;k++){
+                joueurs[k]=joueurs[k+1]; // on décale tous les joueurs à partir i ème, cela permet d'éliminer le joueur qui n'a plus de vie
+            }
+            nb_joueurs--; // on abaisse le nombre de joueurs 
+        }
+    }
+}
+
+int a_gagne(int nb_joueurs, joueur_t* joueurs, generic_queue_t** cmd /*peut être la fifo*/ ){
+    if(nb_joueurs>1){
+        return 0;
+    }
+    else{
+        generic_queue_enqueue(*cmd,joueurs[1].skin'win');// commande dans la fifo pour afficher peut ^tre pas la bonne expression dans la file cmdgraphique
+        return 1;
+    }
+}
+
+void poser_bombe(map_t carte, generic_queue_t** cmd){
+
+    if(/* case de la bombe est vide et le joueur a assez de bombe*/)
 }
