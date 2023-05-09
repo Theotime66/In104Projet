@@ -19,12 +19,9 @@
 *                                                                            *
 *****************************************************************************/
 
-void generic_queue_init (generic_queue_t *queue,
-			 int (*compare)(const void *key1, const void *key2),
-			 void* (*build) (const void *data),
-			 void (*destroy) (void *data))
+void generic_queue_init (generic_queue_t *queue)
 {
-  generic_list_init (queue, compare, build, destroy);
+  generic_list_init (queue);
 }
 
 /*****************************************************************************

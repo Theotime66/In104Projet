@@ -34,6 +34,11 @@ typedef struct joueur{
     int vitesse;
 } joueur_t;
 
+typedef struct bombe{
+    pos_ij_t position_bombe;
+    float timer;
+} bomb_t;
+
 //enum touches_autorisees {SDLK_q, SDLK_s, SDLK_d, SDLK_z, SDLK_l, SDLK_CAPSLOCK, SDLK_LSHIFT, SDLK_SEMICOLON, SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN};
 const int CHAR_AUTORISES[] = {SDLK_q, SDLK_s, SDLK_d, SDLK_z, SDLK_l, SDLK_CAPSLOCK, SDLK_LSHIFT, SDLK_SEMICOLON, SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN};
 
@@ -157,8 +162,8 @@ joueur_t* init_joueur(int nb_joueurs, char* nom_fichier){
 
 pos_ij_t transformation_xy_ij (pos_xy_t position_xy){
     //Fonction permettant de transformer les coordonnées x y (sur la carte) en coordonnées i j (dans la matrice)
-    float x = position_xy.x;
-    float y = position_xy.y;
+    int x = position_xy.x;
+    int y = position_xy.y;
 
     int i = floor(x);
     int j = floor(y);
@@ -173,8 +178,8 @@ pos_xy_t transformation_ij_xy (pos_ij_t position_ij){
     int i = position_ij.i;
     int j = position_ij.j;
 
-    float x = i*71 + 36;
-    float y = j*71 + 36;
+    int x = i*71 + 36;
+    int y = j*71 + 36;
 
     pos_xy_t position_xy = {x, y};
     return position_xy;
@@ -182,8 +187,8 @@ pos_xy_t transformation_ij_xy (pos_ij_t position_ij){
 
 int collision (joueur_t joueur, map_t map, int touche_pressee){
     //Fonction permettant de géner les collisions dans le jeu.
-    //Fonctionnement : si la case dans la direction du déplacement est un 0 : pas de problème. On retourne 0
-    //Fonctionnement : si la case dans la direction du déplacement est autre chose que 0 : problème. On retourne 1. Le déplacement est annulé
+    //Fonctionnement : si la case dans la direction du déplacement est un 0 : PAS DE PROBLEME : ON RETOURNE 0
+    //Fonctionnement : si la case dans la direction du déplacement est autre chose que 0 : PROBLEME (COLLISION) : ON RETOURNE 1. Le déplacement est annulé
 
     int x_joueur = joueur.position_joueur.x;
     int y_joueur = joueur.position_joueur.y;
@@ -197,10 +202,11 @@ int collision (joueur_t joueur, map_t map, int touche_pressee){
     //Déplacement vers le haut
     if ((touche_pressee == SDLK_UP)||(touche_pressee == SDLK_z)){
         if(map.cases[i_joueur][j_joueur - 1] == 0){
-            printf("Collision\n\n");
             return 0;
         }
         else{
+            //Affichage "Collision" dans le terminal s'il y a collision
+            //printf("Collision\n\n");
             return 1;
         }
     }
@@ -292,28 +298,27 @@ void affichage_jeu(map_t carte){
     SDL_Rect backgroundRect = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
 
     /* POSITIONS */
-    // Positionner le joueur au centre de la fenêtre
-    int player1X = (WINDOW_WIDTH - PLAYER_WIDTH) / 2;
-    //int playerX = 700;
-    int player1Y = (WINDOW_HEIGHT - PLAYER_HEIGHT) / 2;
+    //Joueur 1
+    int player1X = 8*71;
+    int player1Y = 8*71;
     //Joueur 2
-    int player2X = 200;
-    int player2Y = 50;
+    int player2X = 3*71 ;
+    int player2Y = 3*71 ;
 
     pos_xy_t position = {player2X, player2Y};
-    joueur_t joueur = {
+    joueur_t joueur2 = {
         31,
         position,
         3,
         3,
         5,
     };
-    int k = 0;
 
 
     // Boucle de jeu
     SDL_Event event;
     int quit = 0;
+    int k = 0;
     while (!quit) {
         // Gérer les événements
         while (SDL_PollEvent(&event)) {
@@ -323,7 +328,7 @@ void affichage_jeu(map_t carte){
                     break;
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym) {
-                        //Joueur 2
+                        //Joueur 1
                         case SDLK_LEFT:
                             player1X -= 5;
                             break;
@@ -336,30 +341,45 @@ void affichage_jeu(map_t carte){
                         case SDLK_DOWN:
                             player1Y += 5;
                             break;
+
+                        case SDLK_l:
+                            /*
+                            int bombe_i;
+                            int bombe_j;
+                            pos_ij_t pos_ij_bombe = {bombe_i,bombe_j};
+                            pos_xy_t pos_xy_bombe = {player2X,player2Y};
+
+                            pos_ij_bombe = transformation_xy_ij(pos_xy_bombe);
+                            float timer = 4;
+                            bomb_t bombe2= {pos_ij_bombe,4};
+                            carte.cases[bombe_i][bombe_j] = 42;
+                            */
+                            break;
                         
-                        //Joueur 1
-                        case SDLK_q:
-                            player2X -= 5;
-                            break;
-                        case SDLK_d:
-                            player2X += 5;
-                            break;
+                        //Joueur 2
+                        
                         case SDLK_z:
-                            player2Y -= 5;
+                            player2Y -= joueur2.vitesse;
                             break;
                         case SDLK_s:
-                            player2Y += 5;
+                            player2Y += joueur2.vitesse;
+                            break;
+                        case SDLK_q:
+                            player2X -= joueur2.vitesse;
+                            break;
+                        case SDLK_d:
+                            player2X += joueur2.vitesse;
                             break;
                     }
                     break;
             }
         }
-        int var = collision (joueur, carte, 'z');
+        int var = collision (joueur2, carte, 'z');
         k++;
-        printf("Affichage collision :%d numéro %d\n",var,k);
-        if (var == 0){
-            printf("COLLISION\n");
-            //quit;
+        //printf("Affichage collision :%d numéro %d\n",var,k);
+        if (var == 1){
+            //printf("COLLISION\n");
+            quit;
         }
 
 
