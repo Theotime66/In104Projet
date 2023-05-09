@@ -435,3 +435,29 @@ void affichage_jeu(map_t carte){
 }
 
 
+<<<<<<< Updated upstream
+
+pos_ij_t transformation_xy_ij (pos_xy_t position_xy){
+    //Fonction permettant de transformer les coordonnées x y (sur la carte) en coordonnées i j (dans la matrice)
+    float x = position_xy.x;
+    float y = position_xy.y;
+
+    int i = floor(x);
+    int j = floor(y);
+
+    pos_ij_t position_ij = {i, j};
+    return position_ij;
+}
+
+pos_xy_t transformation_ij_xy (pos_ij_t position_ij){
+    //Fonction permettant de transformer les coordonnées i j (dans la matrice) en coordonnées x y (sur la carte)
+    //Remarque : cette fonction retourne le centre de la case
+    int i = position_ij.i;
+    int j = position_ij.j;
+
+    float x = i*71 + 36;
+    float y = j*71 + 36;
+
+    pos_xy_t position_xy = {x, y};
+    return position_xy;
+}
