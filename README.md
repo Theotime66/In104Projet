@@ -14,6 +14,7 @@ Convensions utilitées pour le remplissage des cases :
     41 : Bombe 1 (petite)
     42 : Bombe 2 (moyenne)
     43 : Bombe 3 (grande)
+    45 : Flamme explosion
 
 50 :
 

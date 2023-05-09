@@ -284,8 +284,6 @@ void affichage_jeu(map_t carte){
 
     /* CASES */
     // Charger les images des cases
-    //SDL_Surface* grassSurface = SDL_LoadBMP("texture_herbe.bmp");
-    //SDL_Texture* grassTexture = SDL_CreateTextureFromSurface(renderer, grassSurface);
     SDL_Surface* wallSurface = SDL_LoadBMP("images/texture_mur.bmp");
     SDL_Texture* wallTexture = SDL_CreateTextureFromSurface(renderer, wallSurface);
     SDL_Surface* wallUnbreakableSurface = SDL_LoadBMP("images/texture_mur_incassable.bmp");
@@ -317,11 +315,70 @@ void affichage_jeu(map_t carte){
 
     // Boucle de jeu
     SDL_Event event;
+    int cont;
     int quit = 0;
-    int k = 0;
-    while (!quit) {
+    while (quit == 0) {
         // Gérer les événements
         while (SDL_PollEvent(&event)) {
+            SDL_PumpEvents(); // On demande à la SDL de mettre à jour les états sur les périphériques
+            // Clavier
+            {
+                    const Uint8* pKeyStates = SDL_GetKeyboardState(NULL);
+                    if ( pKeyStates[SDL_SCANCODE_ESCAPE] )
+                    {
+                        printf("Quit\n");
+                        quit = 1;
+                    }
+                    if (event.type == SDL_QUIT)
+                    {   
+                        printf("Quit\n");
+                        quit = 1;
+                    }
+                    if ( pKeyStates[SDL_SCANCODE_Q] )
+                    {
+                        player2X -= joueur2.vitesse;
+                    }
+                    if ( pKeyStates[SDL_SCANCODE_Z] )
+                    {
+                        player2Y -= joueur2.vitesse;
+                    }if ( pKeyStates[SDL_SCANCODE_S] )
+                    {
+                        player2Y += joueur2.vitesse;
+                    }if ( pKeyStates[SDL_SCANCODE_D] )
+                    {
+                        player2X += joueur2.vitesse;
+                    }if ( pKeyStates[SDL_SCANCODE_L] )
+                    {
+                        cont = 0;
+                    }if ( pKeyStates[SDL_SCANCODE_UP] )
+                    {
+                        player1Y -= 5;
+                    }if ( pKeyStates[SDL_SCANCODE_DOWN] )
+                    {
+                        player1Y += 5;
+                    }if ( pKeyStates[SDL_SCANCODE_LEFT] )
+                    {
+                        player1X -= 5;
+                    }if ( pKeyStates[SDL_SCANCODE_RIGHT] )
+                    {
+                        player1X += 5;
+                    }if ( pKeyStates[SDL_SCANCODE_SEMICOLON] )
+                    {
+                        cont = 0;
+                    }
+                    if ( pKeyStates[SDL_SCANCODE_LSHIFT] )
+                    {
+                        cont = 0;
+                    }
+                    if ( pKeyStates[SDL_SCANCODE_CAPSLOCK] )
+                    {
+                        cont = 0;
+                    }
+                }
+
+
+
+            /*
             switch (event.type) {
                 case SDL_QUIT:
                     quit = 1;
@@ -342,19 +399,6 @@ void affichage_jeu(map_t carte){
                             player1Y += 5;
                             break;
 
-                        case SDLK_l:
-                            /*
-                            int bombe_i;
-                            int bombe_j;
-                            pos_ij_t pos_ij_bombe = {bombe_i,bombe_j};
-                            pos_xy_t pos_xy_bombe = {player2X,player2Y};
-
-                            pos_ij_bombe = transformation_xy_ij(pos_xy_bombe);
-                            float timer = 4;
-                            bomb_t bombe2= {pos_ij_bombe,4};
-                            carte.cases[bombe_i][bombe_j] = 42;
-                            */
-                            break;
                         
                         //Joueur 2
                         
@@ -372,16 +416,20 @@ void affichage_jeu(map_t carte){
                             break;
                     }
                     break;
-            }
+            }*/
         }
+
+        position.x = player2X;
+        position.y = player2Y;
+        pos_ij_t positionIJ = transformation_xy_ij(position);
+        printf("i=%d,j=%d\n",positionIJ.i,positionIJ.j);
+
         int var = collision (joueur2, carte, 'z');
-        k++;
         //printf("Affichage collision :%d numéro %d\n",var,k);
         if (var == 1){
             printf("COLLISION\n");
             quit;
         }
-
 
         //// Afficher l'arrière-plan
         SDL_RenderCopy(renderer, backgroundTexture, NULL, &backgroundRect);
