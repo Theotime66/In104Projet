@@ -309,7 +309,7 @@ void affichage_jeu(map_t carte){
         position,
         3,
         3,
-        5,
+        2,
     };
 
 
@@ -334,11 +334,11 @@ void affichage_jeu(map_t carte){
                         printf("Quit\n");
                         quit = 1;
                     }
-                    if ( pKeyStates[SDL_SCANCODE_Q] )
+                    if ( pKeyStates[SDL_SCANCODE_A] )
                     {
                         player2X -= joueur2.vitesse;
                     }
-                    if ( pKeyStates[SDL_SCANCODE_Z] )
+                    if ( pKeyStates[SDL_SCANCODE_W] )
                     {
                         player2Y -= joueur2.vitesse;
                     }if ( pKeyStates[SDL_SCANCODE_S] )
