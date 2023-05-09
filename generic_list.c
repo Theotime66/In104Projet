@@ -21,10 +21,7 @@
  *                                                                            *
  *****************************************************************************/
 
-void generic_list_init(generic_list_t *list,
-		       int (*compare) (const void *key1, const void *key2),
-		       void* (*build)(const void *data),
-		       void (*destroy)(void *data))
+void generic_list_init(generic_list_t *list)
 {
 #ifdef DEBUG
   printf ("\t\tEnter %s\n", __func__);
@@ -33,9 +30,6 @@ void generic_list_init(generic_list_t *list,
   /* Initialize the list. */
 
   list->size = 0;
-  list->compare = compare;
-  list->build = build;
-  list->destroy = destroy;
   list->head = NULL;
   list->tail = NULL;
 }

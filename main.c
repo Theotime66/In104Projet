@@ -25,5 +25,17 @@ int main(){
 
     affichage_jeu(carte);
 
+    pos_xy_t position = {250, 500};
+    joueur_t joueur = {
+        31,
+        position,
+        3,
+        3,
+        5,
+    };
+    //printf("Affichage collision :%d\n",collision (joueur, carte, 'z'));
+
+
+    //Libération des ressources utilisées
     return 0;
 }

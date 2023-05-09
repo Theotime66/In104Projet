@@ -48,10 +48,7 @@ typedef struct generic_list_ {
  *                                                                            *
  *****************************************************************************/
 
-void generic_list_init(generic_list_t *list,
-		       int (*compare) (const void *key1, const void *key2),
-		       void* (*build)(const void *data),
-		       void (*destroy)(void *data));
+void generic_list_init(generic_list_t *list);
 
 void generic_list_destroy(generic_list_t *list);
 

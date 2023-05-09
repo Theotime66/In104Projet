@@ -22,6 +22,11 @@ int main(int argc, char* args[]) {
     }
 
 
+void affichage_jeu(map_t carte){
+    //Initialisation de cases
+    int taille_map = carte.taille_map;
+
+
     // Initialiser SDL
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -31,13 +36,14 @@ int main(int argc, char* args[]) {
     // Créer le rendu de la fenêtre
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    // Charger l'image du joueur
+    // Charger l'image du joueur avec transparence
     SDL_Surface* playerSurface = SDL_LoadBMP("player.bmp");
+    SDL_SetColorKey(playerSurface, SDL_TRUE, SDL_MapRGB(playerSurface->format, 255, 0, 255));
     SDL_Texture* playerTexture = SDL_CreateTextureFromSurface(renderer, playerSurface);
 
     // Charger les images des cases
-    SDL_Surface* grassSurface = SDL_LoadBMP("texture_herbe.bmp");
-    SDL_Texture* grassTexture = SDL_CreateTextureFromSurface(renderer, grassSurface);
+    //SDL_Surface* grassSurface = SDL_LoadBMP("texture_herbe.bmp");
+    //SDL_Texture* grassTexture = SDL_CreateTextureFromSurface(renderer, grassSurface);
     SDL_Surface* wallSurface = SDL_LoadBMP("texture_mur.bmp");
     SDL_Texture* wallTexture = SDL_CreateTextureFromSurface(renderer, wallSurface);
 
@@ -48,38 +54,9 @@ int main(int argc, char* args[]) {
     SDL_Rect backgroundRect = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
 
     // Positionner le joueur au centre de la fenêtre
-    //int playerX = (WINDOW_WIDTH - PLAYER_WIDTH) / 2;
-    int playerX = 700;
+    int playerX = (WINDOW_WIDTH - PLAYER_WIDTH) / 2;
+    //int playerX = 700;
     int playerY = (WINDOW_HEIGHT - PLAYER_HEIGHT) / 2;
-
-    // Boucle de jeu
-    SDL_Event event;
-    int quit = 0;
-    while (!quit) {
-        // Gérer les événements
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-                case SDL_QUIT:
-                    quit = 1;
-                    break;
-                case SDL_KEYDOWN:
-                    switch (event.key.keysym.sym) {
-                        case SDLK_LEFT:
-                            playerX -= 5;
-                            break;
-                        case SDLK_RIGHT:
-                            playerX += 5;
-                            break;
-                        case SDLK_UP:
-                            playerY -= 5;
-                            break;
-                        case SDLK_DOWN:
-                            playerY += 5;
-                            break;
-                    }
-                    break;
-            }
-        }
 
         //// Afficher l'arrière-plan
         SDL_RenderCopy(renderer, backgroundTexture, NULL, &backgroundRect);
@@ -87,9 +64,9 @@ int main(int argc, char* args[]) {
         // Afficher les cases de la carte
         for (int i = 0; i < taille_map; i++) {
             for (int j = 0; j < taille_map; j++) {
-                SDL_Rect caseRect = { j * 32, i * 32, 32, 32 }; // taille d'une case est 32x32 pixels
-                if (cases[i][j] == 0) {
-                    SDL_RenderCopy(renderer, grassTexture, NULL, &caseRect);
+                SDL_Rect caseRect = { j * 71, i * 71, 71, 71 }; // taille d'une case est 32x32 pixels
+                if (carte.cases[i][j] == 0) {
+                    //SDL_RenderCopy(renderer, grassTexture, NULL, &caseRect);
                 } else {
                     SDL_RenderCopy(renderer, wallTexture, NULL, &caseRect);
                 }
@@ -112,6 +89,4 @@ int main(int argc, char* args[]) {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-
-    return 0;
 }
