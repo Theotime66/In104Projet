@@ -25,7 +25,7 @@ int main(){
 
     affichage_jeu(carte);
 
-    pos_xy_t position = {250, 500};
+    pos_xy_t position = {0, 100};
     joueur_t joueur = {
         31,
         position,

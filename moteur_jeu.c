@@ -165,8 +165,8 @@ pos_ij_t transformation_xy_ij (pos_xy_t position_xy){
     int x = position_xy.x;
     int y = position_xy.y;
 
-    int i = floor(x);
-    int j = floor(y);
+    int i = floor(x/71);
+    int j = floor(y/71);
 
     pos_ij_t position_ij = {i, j};
     return position_ij;
@@ -206,7 +206,7 @@ int collision (joueur_t joueur, map_t map, int touche_pressee){
         }
         else{
             //Affichage "Collision" dans le terminal s'il y a collision
-            //printf("Collision\n\n");
+            printf("Collision\n\n");
             return 1;
         }
     }
@@ -260,25 +260,25 @@ void affichage_jeu(map_t carte){
 
     /* JOUEURS */
     // Charger l'image du joueur 1 avec transparence
-    SDL_Surface* playerSurface1 = SDL_LoadBMP("player.bmp");
+    SDL_Surface* playerSurface1 = SDL_LoadBMP("images/player.bmp");
     SDL_SetColorKey(playerSurface1, SDL_TRUE, SDL_MapRGB(playerSurface1->format, 0, 134.0, 53.0));
     SDL_Texture* playerTexture1 = SDL_CreateTextureFromSurface(renderer, playerSurface1);
     // Charger l'image du joueur 2 avec transparence
-    SDL_Surface* playerSurface2 = SDL_LoadBMP("skin2.bmp");
+    SDL_Surface* playerSurface2 = SDL_LoadBMP("images/skin2.bmp");
     SDL_SetColorKey(playerSurface2, SDL_TRUE, SDL_MapRGB(playerSurface2->format, 0, 134.0, 53.0));
     SDL_Texture* playerTexture2 = SDL_CreateTextureFromSurface(renderer, playerSurface2);
 
     /* BOMBES */
     //Bombe 1
-    SDL_Surface* bombeSurface1 = SDL_LoadBMP("bombe1.bmp");
+    SDL_Surface* bombeSurface1 = SDL_LoadBMP("images/bombe1.bmp");
     SDL_SetColorKey(bombeSurface1, SDL_TRUE, SDL_MapRGB(bombeSurface1->format, 255, 0, 255));
     SDL_Texture* bombeTexture1 = SDL_CreateTextureFromSurface(renderer, bombeSurface1);
     //Bombe 2
-    SDL_Surface* bombeSurface2 = SDL_LoadBMP("bombe2.bmp");
+    SDL_Surface* bombeSurface2 = SDL_LoadBMP("images/bombe2.bmp");
     SDL_SetColorKey(bombeSurface2, SDL_TRUE, SDL_MapRGB(bombeSurface2->format, 255, 0, 255));
     SDL_Texture* bombeTexture2 = SDL_CreateTextureFromSurface(renderer, bombeSurface2);
     //Bombe 3
-    SDL_Surface* bombeSurface3 = SDL_LoadBMP("bombe3.bmp");
+    SDL_Surface* bombeSurface3 = SDL_LoadBMP("images/bombe3.bmp");
     SDL_SetColorKey(bombeSurface3, SDL_TRUE, SDL_MapRGB(bombeSurface3->format, 255, 0, 255));
     SDL_Texture* bombeTexture3 = SDL_CreateTextureFromSurface(renderer, bombeSurface3);
 
@@ -286,14 +286,14 @@ void affichage_jeu(map_t carte){
     // Charger les images des cases
     //SDL_Surface* grassSurface = SDL_LoadBMP("texture_herbe.bmp");
     //SDL_Texture* grassTexture = SDL_CreateTextureFromSurface(renderer, grassSurface);
-    SDL_Surface* wallSurface = SDL_LoadBMP("texture_mur.bmp");
+    SDL_Surface* wallSurface = SDL_LoadBMP("images/texture_mur.bmp");
     SDL_Texture* wallTexture = SDL_CreateTextureFromSurface(renderer, wallSurface);
-    SDL_Surface* wallUnbreakableSurface = SDL_LoadBMP("texture_mur_incassable.bmp");
+    SDL_Surface* wallUnbreakableSurface = SDL_LoadBMP("images/texture_mur_incassable.bmp");
     SDL_Texture* wallUnbreakableTexture = SDL_CreateTextureFromSurface(renderer, wallUnbreakableSurface);
 
     
     // Charger l'image de l'arrière-plan
-    SDL_Surface* backgroundSurface = SDL_LoadBMP("background.bmp");
+    SDL_Surface* backgroundSurface = SDL_LoadBMP("images/background.bmp");
     SDL_Texture* backgroundTexture = SDL_CreateTextureFromSurface(renderer, backgroundSurface);
     SDL_Rect backgroundRect = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
 
@@ -378,7 +378,7 @@ void affichage_jeu(map_t carte){
         k++;
         //printf("Affichage collision :%d numéro %d\n",var,k);
         if (var == 1){
-            //printf("COLLISION\n");
+            printf("COLLISION\n");
             quit;
         }
 
@@ -432,32 +432,4 @@ void affichage_jeu(map_t carte){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-}
-
-
-<<<<<<< Updated upstream
-
-pos_ij_t transformation_xy_ij (pos_xy_t position_xy){
-    //Fonction permettant de transformer les coordonnées x y (sur la carte) en coordonnées i j (dans la matrice)
-    float x = position_xy.x;
-    float y = position_xy.y;
-
-    int i = floor(x);
-    int j = floor(y);
-
-    pos_ij_t position_ij = {i, j};
-    return position_ij;
-}
-
-pos_xy_t transformation_ij_xy (pos_ij_t position_ij){
-    //Fonction permettant de transformer les coordonnées i j (dans la matrice) en coordonnées x y (sur la carte)
-    //Remarque : cette fonction retourne le centre de la case
-    int i = position_ij.i;
-    int j = position_ij.j;
-
-    float x = i*71 + 36;
-    float y = j*71 + 36;
-
-    pos_xy_t position_xy = {x, y};
-    return position_xy;
 }
