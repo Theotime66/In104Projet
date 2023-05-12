@@ -319,7 +319,7 @@ void affichage_jeu(map_t carte){
 
     /* JOUEURS */
     // Charger l'image du joueur 1 avec transparence
-    SDL_Surface* playerSurface1 = SDL_LoadBMP("images/player.bmp");
+    SDL_Surface* playerSurface1 = SDL_LoadBMP("images/skin1.bmp");
     SDL_SetColorKey(playerSurface1, SDL_TRUE, SDL_MapRGB(playerSurface1->format, 0, 134.0, 53.0));
     SDL_Texture* playerTexture1 = SDL_CreateTextureFromSurface(renderer, playerSurface1);
     // Charger l'image du joueur 2 avec transparence
@@ -347,6 +347,10 @@ void affichage_jeu(map_t carte){
     SDL_Texture* wallTexture = SDL_CreateTextureFromSurface(renderer, wallSurface);
     SDL_Surface* wallUnbreakableSurface = SDL_LoadBMP("images/texture_mur_incassable.bmp");
     SDL_Texture* wallUnbreakableTexture = SDL_CreateTextureFromSurface(renderer, wallUnbreakableSurface);
+
+    SDL_Surface* explosionSurface = SDL_LoadBMP("images/explosion.bmp");
+    SDL_SetColorKey(explosionSurface, SDL_TRUE, SDL_MapRGB(explosionSurface->format, 255, 0, 255));
+    SDL_Texture* explosionTexture = SDL_CreateTextureFromSurface(renderer, explosionSurface);
 
     
     // Charger l'image de l'arrière-plan
@@ -534,6 +538,9 @@ void affichage_jeu(map_t carte){
                 }
                 else if (carte.cases[i][j] == 43){
                     SDL_RenderCopy(renderer, bombeTexture3, NULL, &caseRect);
+                }
+                else if (carte.cases[i][j] == 45){
+                    SDL_RenderCopy(renderer, explosionTexture, NULL, &caseRect);
                 }
             }
         }
