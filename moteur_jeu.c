@@ -404,21 +404,23 @@ void affichage_jeu(map_t carte){
                         printf("Quit\n");
                         quit = 1;
                     }
-                    if ( pKeyStates[SDL_SCANCODE_Q] )
+                    if ( pKeyStates[SDL_SCANCODE_A] )
                     {
-                        if(collision_J2_lettres (joueur2, carte, SDL_SCANCODE_Q) == 0)
+                        if(collision_J2_lettres (joueur2, carte, SDL_SCANCODE_A) == 0)
                             player2X -= joueur2.vitesse;
                     }
                     if ( pKeyStates[SDL_SCANCODE_W] )
                     {
-                        player2Y -= joueur2.vitesse;
+                        if(collision_J2_lettres (joueur2, carte, SDL_SCANCODE_W) == 0)
+                            player2Y -= joueur2.vitesse;
                     }if ( pKeyStates[SDL_SCANCODE_S] )
                     {
                         if(collision_J2_lettres (joueur2, carte, SDL_SCANCODE_S) == 0)
                             player2Y += joueur2.vitesse;
                     }if ( pKeyStates[SDL_SCANCODE_D] )
                     {
-                        player2X += joueur2.vitesse;
+                        if(collision_J2_lettres (joueur2, carte, SDL_SCANCODE_D) == 0)
+                            player2X += joueur2.vitesse;
                     }if ( pKeyStates[SDL_SCANCODE_L] )
                     {
                         cont = 0;
