@@ -185,7 +185,7 @@ pos_xy_t transformation_ij_xy (pos_ij_t position_ij){
     return position_xy;
 }
 
-int collision (joueur_t joueur, map_t map, int touche_pressee){
+int collision_J1_fleches (joueur_t joueur, map_t map, int touche_pressee){
     //Fonction permettant de géner les collisions dans le jeu.
     //Fonctionnement : si la case dans la direction du déplacement est un 0 : PAS DE PROBLEME : ON RETOURNE 0
     //Fonctionnement : si la case dans la direction du déplacement est autre chose que 0 : PROBLEME (COLLISION) : ON RETOURNE 1. Le déplacement est annulé
@@ -200,7 +200,7 @@ int collision (joueur_t joueur, map_t map, int touche_pressee){
 
     //Test de collision
     //Déplacement vers le haut
-    if ((touche_pressee == SDLK_UP)||(touche_pressee == SDLK_z)){
+    if (touche_pressee == SDL_SCANCODE_UP){
         if(map.cases[i_joueur][j_joueur - 1] == 0){
             return 0;
         }
@@ -211,7 +211,7 @@ int collision (joueur_t joueur, map_t map, int touche_pressee){
         }
     }
     //Déplacement vers le bas
-    else if ((touche_pressee == SDLK_DOWN)||(touche_pressee == SDLK_s)){
+    else if (touche_pressee == SDL_SCANCODE_DOWN){
         if(map.cases[i_joueur][j_joueur + 1] == 0){
             return 0;
         }
@@ -220,7 +220,7 @@ int collision (joueur_t joueur, map_t map, int touche_pressee){
         }
     }
     //Déplacement vers la gauche
-    else if ((touche_pressee == SDLK_LEFT)||(touche_pressee == SDLK_q)){
+    else if (touche_pressee == SDL_SCANCODE_LEFT){
         if(map.cases[i_joueur - 1][j_joueur] == 0){
             return 0;
         }
@@ -229,7 +229,7 @@ int collision (joueur_t joueur, map_t map, int touche_pressee){
         }
     }
     //Déplacement vers la droite
-    else if ((touche_pressee == SDLK_RIGHT)||(touche_pressee == SDLK_d)){
+    else if (touche_pressee == SDL_SCANCODE_RIGHT){
         if(map.cases[i_joueur + 1][j_joueur] == 0){
             return 0;
         }
@@ -239,7 +239,66 @@ int collision (joueur_t joueur, map_t map, int touche_pressee){
     }
     //Touche appuyée ne correspond pas à un déplacement
     else {
-        return 0;
+        return 1;
+    }
+
+}
+
+int collision_J2_lettres (joueur_t joueur, map_t map, int touche_pressee){
+    //Fonction permettant de géner les collisions dans le jeu.
+    //Fonctionnement : si la case dans la direction du déplacement est un 0 : PAS DE PROBLEME : ON RETOURNE 0
+    //Fonctionnement : si la case dans la direction du déplacement est autre chose que 0 : PROBLEME (COLLISION) : ON RETOURNE 1. Le déplacement est annulé
+
+    int x_joueur = joueur.position_joueur.x;
+    int y_joueur = joueur.position_joueur.y;
+    pos_xy_t positionXY= {x_joueur, y_joueur};
+
+    pos_ij_t positionIJ = transformation_xy_ij(positionXY);
+    int i_joueur = positionIJ.i;
+    int j_joueur = positionIJ.j;
+
+    //Test de collision
+    //Déplacement vers le haut
+    if (touche_pressee == SDLK_z){
+        if(map.cases[i_joueur][j_joueur - 1] == 0){
+            return 0;
+        }
+        else{
+            //Affichage "Collision" dans le terminal s'il y a collision
+            printf("Collision (test if)\n\n");
+            return 1;
+        }
+    }
+    //Déplacement vers le bas
+    else if (touche_pressee == SDL_SCANCODE_S){
+        if(map.cases[i_joueur][j_joueur + 1] == 0){
+            return 0;
+        }
+        else{
+            return 1;
+        }
+    }
+    //Déplacement vers la gauche
+    else if (touche_pressee == SDL_SCANCODE_Q){
+        if(map.cases[i_joueur - 1][j_joueur] == 0){
+            return 0;
+        }
+        else{
+            return 1;
+        }
+    }
+    //Déplacement vers la droite
+    else if (touche_pressee == SDL_SCANCODE_D){
+        if(map.cases[i_joueur + 1][j_joueur] == 0){
+            return 0;
+        }
+        else{
+            return 1;
+        }
+    }
+    //Touche appuyée ne correspond pas à un déplacement
+    else {
+        return 1;
     }
 
 }
@@ -297,19 +356,29 @@ void affichage_jeu(map_t carte){
 
     /* POSITIONS */
     //Joueur 1
-    int player1X = 8*71;
-    int player1Y = 8*71;
-    //Joueur 2
-    int player2X = 3*71 ;
-    int player2Y = 3*71 ;
+    int player1X = 9*71 ;
+    int player1Y = 9*71 ;
 
-    pos_xy_t position = {player2X, player2Y};
+    pos_xy_t positionJ1 = {player1X, player1Y};
+    joueur_t joueur1 = {
+        32,
+        positionJ1,
+        1,
+        3,
+        3,
+    };
+
+    //Joueur 2
+    int player2X = 1*71;
+    int player2Y = 2*71;
+
+    pos_xy_t positionJ2 = {player2X, player2Y};
     joueur_t joueur2 = {
         31,
-        position,
+        positionJ2,
+        1,
         3,
         3,
-        2,
     };
 
 
@@ -317,6 +386,7 @@ void affichage_jeu(map_t carte){
     SDL_Event event;
     int cont;
     int quit = 0;
+    int collision_true; //Variable qui vaut 1 si il y a collision entre le joueur et un mur
     while (quit == 0) {
         // Gérer les événements
         while (SDL_PollEvent(&event)) {
@@ -334,16 +404,18 @@ void affichage_jeu(map_t carte){
                         printf("Quit\n");
                         quit = 1;
                     }
-                    if ( pKeyStates[SDL_SCANCODE_A] )
+                    if ( pKeyStates[SDL_SCANCODE_Q] )
                     {
-                        player2X -= joueur2.vitesse;
+                        if(collision_J2_lettres (joueur2, carte, SDL_SCANCODE_Q) == 0)
+                            player2X -= joueur2.vitesse;
                     }
                     if ( pKeyStates[SDL_SCANCODE_W] )
                     {
                         player2Y -= joueur2.vitesse;
                     }if ( pKeyStates[SDL_SCANCODE_S] )
                     {
-                        player2Y += joueur2.vitesse;
+                        if(collision_J2_lettres (joueur2, carte, SDL_SCANCODE_S) == 0)
+                            player2Y += joueur2.vitesse;
                     }if ( pKeyStates[SDL_SCANCODE_D] )
                     {
                         player2X += joueur2.vitesse;
@@ -352,16 +424,20 @@ void affichage_jeu(map_t carte){
                         cont = 0;
                     }if ( pKeyStates[SDL_SCANCODE_UP] )
                     {
-                        player1Y -= 5;
+                        if(collision_J1_fleches (joueur1, carte, SDL_SCANCODE_UP) == 0)
+                            player1Y -= 5;
                     }if ( pKeyStates[SDL_SCANCODE_DOWN] )
                     {
-                        player1Y += 5;
+                        if(collision_J1_fleches (joueur1, carte, SDL_SCANCODE_DOWN) == 0)
+                            player1Y += 5;
                     }if ( pKeyStates[SDL_SCANCODE_LEFT] )
                     {
-                        player1X -= 5;
+                        if(collision_J1_fleches (joueur1, carte, SDL_SCANCODE_LEFT) == 0)
+                            player1X -= 5;
                     }if ( pKeyStates[SDL_SCANCODE_RIGHT] )
                     {
-                        player1X += 5;
+                        if(collision_J1_fleches (joueur1, carte, SDL_SCANCODE_RIGHT) == 0)
+                            player1X += 5;
                     }if ( pKeyStates[SDL_SCANCODE_SEMICOLON] )
                     {
                         cont = 0;
@@ -419,15 +495,16 @@ void affichage_jeu(map_t carte){
             }*/
         }
 
-        position.x = player2X;
-        position.y = player2Y;
-        pos_ij_t positionIJ = transformation_xy_ij(position);
+        positionJ2.x = player2X;
+        positionJ2.y = player2Y;
+        pos_ij_t positionIJ = transformation_xy_ij(positionJ2);
         printf("i=%d,j=%d\n",positionIJ.i,positionIJ.j);
 
-        int var = collision (joueur2, carte, 'z');
+        joueur2.position_joueur = positionJ2;
+        int var = collision_J2_lettres (joueur2, carte, 'z');
         //printf("Affichage collision :%d numéro %d\n",var,k);
         if (var == 1){
-            printf("COLLISION\n");
+            //printf("COLLISION\n");
             quit;
         }
 
