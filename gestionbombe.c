@@ -3,6 +3,12 @@
 #include <math.h>
 #include <SDL2/SDL.h>
 
+#define TAILLE_MAP 14
+
+typedef struct map {
+    int taille_map;
+    int cases[TAILLE_MAP][TAILLE_MAP];
+} map_t;
 typedef struct position_xy {
     int x;
     int y;
@@ -38,7 +44,7 @@ struct param{
 // in case your callback needs to adjust for variances.
 // fonction qui permet de poser une bombe si possible et de l'initialiser 
 // Il faut mettre absolument dans le main SDL_Init(SDL_INIT_TIMER) pour que SDL_AddTimer fonctionne 
-void poser_bombe(joueur_t* joueur, map_t* map, bomb_t* bombes,int* nb_bombes,int touche_pressee){
+void poser_bombe(joueur_t* joueur, map_t* map, bomb_t* bombes){
 
     Uint32 TPS_EXPLOSION=3000; //le Uint32 est pour faire focntionner SDL_AddTimer 
     int RAYON_EXPLOSION=3;  // pour le moment des cte pourra être changer si différents niveaux de bombes
@@ -55,15 +61,10 @@ void poser_bombe(joueur_t* joueur, map_t* map, bomb_t* bombes,int* nb_bombes,int
         struct param param_bombe_explosion_callback;
         param_bombe_explosion_callback.map = *map;
         param_bombe_explosion_callback.joueur = *joueur;
-        param_bombe_explosion_callback.nb_joueur = nb_joueur; // Modifier avec le nombre de joueurs
         param_bombe_explosion_callback.bombe = n_bombe;
-        param_bombe_explosion_callback.bombes = bombes;
         
         n_bombe.timer_id= SDL_AddTimer(TPS_EXPLOSION,bombe_explosion_callback, param_bombe_explosion_callback); 
         n_bombe.rayon= RAYON_EXPLOSION;
-        
-        bombes[*nb_bombes] = n_bombe; // on ajoute la nouvelle bombe à la liste des bombes
-        (*nb_bombes)++; // on augmente le nb de bombe sur le terrain ? Il y a t il un max ? 
     }
 }
 
@@ -71,11 +72,8 @@ Uint32 bombe_explosion_callback(Uint32 SDL_TimerCallback,void* parametres){
     
     // On récupère les informations nécessaires pour l'explosion de la bombe
     bomb_t* bombe = parametres->n_bombe;
-    bomb_t* l_bombes = parametres->bombes;
     map_t* map = parametres->map;
-    int nb_joueurs = parametres->nb_joueur;
     joueur_t* joueurs = parametres->joueur;
-     param_t* params = (param_t*)parametres;
 
 /*    bomb_t* bombe = &(params->bombe);
     bomb_t* l_bombes = &(params->bombes);
@@ -84,22 +82,14 @@ Uint32 bombe_explosion_callback(Uint32 SDL_TimerCallback,void* parametres){
     joueur_t* joueurs = &(params->joueur);*/ 
     
     // On crée une explosion/destruction centrée sur la position de la bombe
-    explosion_bombe(map,bombe,nb_joueurs,joueurs);
+    explosion_bombe(map,bombe,joueurs);
     
-    // On retire la bombe de la liste des bombes
-    int i=0;
-    while(l_bombes[i].timer_id !=bombe->timer_id){
-        i++;
-    }
-    for(int k=i; k<nb_joueurs-1 ;k++){
-                l_bombes[k]=l_bombes[k+1]; // on décale tous les bombes à partir i ème, cela permet d'éliminer la bombe explosée
-            }
     // On retourne 0 pour que le timer ne se répète pas
     return 0;
     //SDL_RemoveTimer();
 }
 
-void explosion_bombe(map_t* map, bomb_t* bombe,int nb_joueurs,joueur_t* joueur ){
+void explosion_bombe(map_t* map, bomb_t* bombe,joueur_t* joueur ){
     int i = bombe->pos_bombe.x;
     int j = bombe->pos_bombe.y;
     int rayon = bombe->rayon;
