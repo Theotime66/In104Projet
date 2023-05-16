@@ -4,6 +4,7 @@
 
 
 int main(){
+    SDL_Init(SDL_INIT_TIMER);
 
     //Création d'une map test pour l'afficher
     extern int taille_map;
@@ -30,7 +31,7 @@ int main(){
         31,
         position,
         3,
-        3,
+        4,
         5,
     };
     //printf("Affichage collision :%d\n",collision (joueur, carte, 'z'));

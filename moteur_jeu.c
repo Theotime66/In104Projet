@@ -259,13 +259,13 @@ int collision_J2_lettres (joueur_t joueur, map_t map, int touche_pressee){
 
     //Test de collision
     //Déplacement vers le haut
-    if (touche_pressee == SDLK_z){
+    if (touche_pressee == SDL_SCANCODE_Z){
         if(map.cases[i_joueur][j_joueur - 1] == 0){
             return 0;
         }
         else{
             //Affichage "Collision" dans le terminal s'il y a collision
-            printf("Collision (test if)\n\n");
+            //printf("Collision (test if)\n\n");
             return 1;
         }
     }
@@ -408,14 +408,14 @@ void affichage_jeu(map_t carte){
                         printf("Quit\n");
                         quit = 1;
                     }
-                    if ( pKeyStates[SDL_SCANCODE_A] )
+                    if ( pKeyStates[SDL_SCANCODE_Q] )
                     {
-                        if(collision_J2_lettres (joueur2, carte, SDL_SCANCODE_A) == 0)
+                        if(collision_J2_lettres (joueur2, carte, SDL_SCANCODE_Q) == 0)
                             player2X -= joueur2.vitesse;
                     }
-                    if ( pKeyStates[SDL_SCANCODE_W] )
+                    if ( pKeyStates[SDL_SCANCODE_Z] )
                     {
-                        if(collision_J2_lettres (joueur2, carte, SDL_SCANCODE_W) == 0)
+                        if(collision_J2_lettres (joueur2, carte, SDL_SCANCODE_Z) == 0)
                             player2Y -= joueur2.vitesse;
                     }if ( pKeyStates[SDL_SCANCODE_S] )
                     {
