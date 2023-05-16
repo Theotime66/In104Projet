@@ -2,42 +2,15 @@
 #include <stdlib.h>
 #include <math.h>
 #include <SDL2/SDL.h>
+#include "gestionbombe.h"
 
 
-#define TAILLE_MAP 14
 const int WINDOW_WIDTH = 994;
 const int WINDOW_HEIGHT = 994;
 const int PLAYER_WIDTH = 71;
 const int PLAYER_HEIGHT = 71;
 
 
-typedef struct map {
-    int taille_map;
-    int cases[TAILLE_MAP][TAILLE_MAP];
-} map_t;
-
-typedef struct position_xy {
-    int x;
-    int y;
-} pos_xy_t;
-
-typedef struct position_ij {
-    int i;
-    int j;
-} pos_ij_t;
-
-typedef struct joueur{
-    int skin;
-    pos_xy_t position_joueur;
-    int nb_bombes;
-    int nb_vies;
-    int vitesse;
-} joueur_t;
-
-typedef struct bombe{
-    pos_ij_t position_bombe;
-    float timer;
-} bomb_t;
 
 //enum touches_autorisees {SDLK_q, SDLK_s, SDLK_d, SDLK_z, SDLK_l, SDLK_CAPSLOCK, SDLK_LSHIFT, SDLK_SEMICOLON, SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN};
 const int CHAR_AUTORISES[] = {SDLK_q, SDLK_s, SDLK_d, SDLK_z, SDLK_l, SDLK_CAPSLOCK, SDLK_LSHIFT, SDLK_SEMICOLON, SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN};
@@ -428,7 +401,7 @@ void affichage_jeu(map_t carte){
                     }if ( pKeyStates[SDL_SCANCODE_K] )
                     {
                         bomb_t* bombe;
-                        poser_bombe(joueur2, carte, bombe);
+                        poser_bombe(&joueur2, &carte, bombe);
                     }if ( pKeyStates[SDL_SCANCODE_UP] )
                     {
                         if(collision_J1_fleches (joueur1, carte, SDL_SCANCODE_UP) == 0)
@@ -448,7 +421,7 @@ void affichage_jeu(map_t carte){
                     }if ( pKeyStates[SDL_SCANCODE_SEMICOLON] )
                     {
                         bomb_t* bombe;
-                        poser_bombe(joueur1, carte, bombe);
+                        poser_bombe(&joueur1, &carte, bombe);
                     }
                     if ( pKeyStates[SDL_SCANCODE_LSHIFT] )
                     {
