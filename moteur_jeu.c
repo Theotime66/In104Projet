@@ -425,9 +425,10 @@ void affichage_jeu(map_t carte){
                     {
                         if(collision_J2_lettres (joueur2, carte, SDL_SCANCODE_D) == 0)
                             player2X += joueur2.vitesse;
-                    }if ( pKeyStates[SDL_SCANCODE_L] )
+                    }if ( pKeyStates[SDL_SCANCODE_K] )
                     {
-                        cont = 0;
+                        bomb_t* bombe;
+                        poser_bombe(joueur2, carte, bombe);
                     }if ( pKeyStates[SDL_SCANCODE_UP] )
                     {
                         if(collision_J1_fleches (joueur1, carte, SDL_SCANCODE_UP) == 0)
@@ -446,7 +447,8 @@ void affichage_jeu(map_t carte){
                             player1X += 5;
                     }if ( pKeyStates[SDL_SCANCODE_SEMICOLON] )
                     {
-                        cont = 0;
+                        bomb_t* bombe;
+                        poser_bombe(joueur1, carte, bombe);
                     }
                     if ( pKeyStates[SDL_SCANCODE_LSHIFT] )
                     {
