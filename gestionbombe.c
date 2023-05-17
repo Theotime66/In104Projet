@@ -92,7 +92,12 @@ void explosion_bombe(map_t** map2, bomb_t* bombe,joueur_t* joueur ){
             joueur[l].nb_vies --;
         }
         map->cases[k][j]=45;
+
     }
+    Uint32 frameStartFire = SDL_GetTicks();
+     while(SDL_GetTicks()-frameStartFire < 500){
+        }
+    // fifo des flammes à 0 
 }
 
 
