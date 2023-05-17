@@ -15,4 +15,4 @@ void poser_bombe(joueur_t* joueur, map_t* map, bomb_t* bombes);
 
 Uint32 bombe_explosion_callback(Uint32 SDL_TimerCallback,void* parametres);
 
-void explosion_bombe(map_t* map, bomb_t* bombe);
+void explosion_bombe(map_t* map, bomb_t* bombe,joueur_t* joueur);
