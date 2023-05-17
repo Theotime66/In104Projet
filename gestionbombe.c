@@ -4,9 +4,6 @@
 #include <SDL2/SDL.h>
 #include "moteur_jeu.h"
 
-#define TAILLE_MAP 14
-
-
 typedef struct param{
     map_t map;
     joueur_t joueur;

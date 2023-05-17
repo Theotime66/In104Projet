@@ -2,12 +2,13 @@
 #include <SDL2/SDL.h>
 #include "moteur_jeu.h"
 
+#define TAILLE_MAP 14
 
 int main(){
     SDL_Init(SDL_INIT_TIMER);
 
     //Création d'une map test pour l'afficher
-    extern int taille_map;
+    int taille_map = TAILLE_MAP;
 
     //Initialisation de toutes les cases à 1
     int cases[taille_map][taille_map];

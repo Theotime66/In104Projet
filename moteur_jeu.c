@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include "gestionbombe.h"
 
+#define TAILLE_MAP 14
 
 const int WINDOW_WIDTH = 994;
 const int WINDOW_HEIGHT = 994;
