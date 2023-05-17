@@ -24,8 +24,8 @@ typedef struct joueur{
 } joueur_t;
 
 typedef struct bombe{
-    pos_xy_t pos_bombe;
-    SDL_TimerID timer_id; // à voir pas sur de continuer à utiliser SDL_TimeID je suis pas sur du focntionnement du callback
+    pos_ij_t pos_bombe;
+    int temps_explosion;
     int rayon;
 } bomb_t; 
 
@@ -35,10 +35,12 @@ void map_avec_fichier (char* nom_fichier, map_t* map);
 
 joueur_t* init_joueur(int nb_joueurs, char* nom_fichier);
 
-void affichage_jeu ();
+void affichage_jeu(map_t carte);
 
-pos_ij_t transformation_xy_ij (pos_xy_t position_xy);
+pos_ij_t transformation_xy_ij (pos_xy_t position_xy, int offsetX, int offsetY);
 
 pos_xy_t transformation_ij_xy (pos_ij_t position_ij);
 
-int collision (joueur_t joueur, map_t map, int touche_pressee);
+int collision_J1_fleches (joueur_t joueur, map_t map, int touche_pressee);
+
+int collision_J2_lettres (joueur_t joueur, map_t map, int touche_pressee);
