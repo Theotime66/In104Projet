@@ -26,7 +26,9 @@ typedef struct joueur{
 typedef struct bombe{
     pos_ij_t pos_bombe;
     int temps_explosion;
+    int temps_pose_bombe;
     int rayon;
+    joueur_t joueur_poseur_bombe;
 } bomb_t; 
 
 void affichage_carte(map_t carte);
@@ -35,8 +37,6 @@ void map_avec_fichier (char* nom_fichier, map_t* map);
 
 joueur_t* init_joueur(int nb_joueurs, char* nom_fichier);
 
-void affichage_jeu(map_t carte);
-
 pos_ij_t transformation_xy_ij (pos_xy_t position_xy, int offsetX, int offsetY);
 
 pos_xy_t transformation_ij_xy (pos_ij_t position_ij);
@@ -44,3 +44,5 @@ pos_xy_t transformation_ij_xy (pos_ij_t position_ij);
 int collision_J1_fleches (joueur_t joueur, map_t map, int touche_pressee);
 
 int collision_J2_lettres (joueur_t joueur, map_t map, int touche_pressee);
+
+void affichage_jeu(map_t carte);

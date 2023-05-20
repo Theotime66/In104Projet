@@ -14,7 +14,7 @@ const int PLAYER_HEIGHT = 71;
 
 
 //enum touches_autorisees {SDLK_q, SDLK_s, SDLK_d, SDLK_z, SDLK_l, SDLK_CAPSLOCK, SDLK_LSHIFT, SDLK_SEMICOLON, SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN};
-const int CHAR_AUTORISES[] = {SDLK_q, SDLK_s, SDLK_d, SDLK_z, SDLK_l, SDLK_CAPSLOCK, SDLK_LSHIFT, SDLK_SEMICOLON, SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN};
+//const int CHAR_AUTORISES[] = {SDLK_q, SDLK_s, SDLK_d, SDLK_z, SDLK_l, SDLK_CAPSLOCK, SDLK_LSHIFT, SDLK_SEMICOLON, SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN};
 
 
 
@@ -88,7 +88,6 @@ void map_avec_fichier (char* nom_fichier, map_t* map){
     map->taille_map = taille_map;
 }
 
-
 joueur_t* init_joueur(int nb_joueurs, char* nom_fichier){
     
     // Allouer dynamiquement le tableau de joueurs
@@ -134,7 +133,6 @@ joueur_t* init_joueur(int nb_joueurs, char* nom_fichier){
     return(joueur);
 }
 
-
 pos_ij_t transformation_xy_ij (pos_xy_t position_xy, int offsetX, int offsetY){
     //Fonction permettant de transformer les coordonnées x y (sur la carte) en coordonnées i j (dans la matrice)
     int x = position_xy.x;
@@ -173,10 +171,13 @@ int collision_J1_fleches (joueur_t joueur, map_t map, int touche_pressee){
 
     //Test de collision
     //Déplacement vers le haut
-    if (touche_pressee == SDL_SCANCODE_Y){
+    if (touche_pressee == SDL_SCANCODE_Y){        
         pos_ij_t positionIJ = transformation_xy_ij(positionXY,0,45);
         int i_joueur = positionIJ.i;
         int j_joueur = positionIJ.j;
+
+        printf("x=%d,y=%d, i=%d,j=%d\n",x_joueur,y_joueur, i_joueur, j_joueur);
+        printf("case: %d\n", map.cases[j_joueur-1][i_joueur]);
 
         if(map.cases[j_joueur-1][i_joueur] == 0){
             return 0;
@@ -379,7 +380,7 @@ void affichage_jeu(map_t carte){
     /* POSITIONS */
     //Joueur 1
     int player1X = 9*71 ;
-    int player1Y = 9*71 ;
+    int player1Y = 10*71 ;
 
     pos_xy_t positionJ1 = {player1X, player1Y};
     joueur_t joueur1 = {
@@ -403,6 +404,10 @@ void affichage_jeu(map_t carte){
         3,
     };
 
+    /* BOMBES */
+    int nb_bombes = 0;
+    int nb_max_bombes_sur_plateau = 10;
+    bomb_t tableau_bombes[nb_max_bombes_sur_plateau];
 
     // Boucle de jeu
     SDL_Event event;
@@ -447,6 +452,7 @@ void affichage_jeu(map_t carte){
                     {
                         //map->cases[joueur2->position_joueur.x][joueur2->position_joueur.y]=41; // on change ce qui est dans la case 
                         poser_bombe(&joueur2, &carte);
+                        nb_bombes++;
                     }if ( pKeyStates[SDL_SCANCODE_Y] )
                     {
                         if(collision_J1_fleches (joueur1, carte, SDL_SCANCODE_Y) == 0)
@@ -482,45 +488,32 @@ void affichage_jeu(map_t carte){
             SDL_Delay(frameDelay - frameTime);
         }
 
-            /*
-            switch (event.type) {
-                case SDL_QUIT:
-                    quit = 1;
-                    break;
-                case SDL_KEYDOWN:
-                    switch (event.key.keysym.sym) {
-                        //Joueur 1
-                        case SDLK_LEFT:
-                            player1X -= 5;
-                            break;
-                        case SDLK_RIGHT:
-                            player1X += 5;
-                            break;
-                        case SDLK_UP:
-                            player1Y -= 5;
-                            break;
-                        case SDLK_DOWN:
-                            player1Y += 5;
-                            break;
+        //Gestion des bombes:
+        bomb_t bombe_temporaire;
+        int temps_pose_bombe;
+        int temps_explosion;
+        joueur_t joueur_temporaire;
 
-                        
-                        //Joueur 2
-                        
-                        case SDLK_z:
-                            player2Y -= joueur2.vitesse;
-                            break;
-                        case SDLK_s:
-                            player2Y += joueur2.vitesse;
-                            break;
-                        case SDLK_q:
-                            player2X -= joueur2.vitesse;
-                            break;
-                        case SDLK_d:
-                            player2X += joueur2.vitesse;
-                            break;
-                    }
-                    break;
-            }*/
+
+
+        for (int k=0; k<nb_bombes; k++){
+            bombe_temporaire = tableau_bombes[k];
+            temps_pose_bombe = bombe_temporaire.temps_pose_bombe;
+            joueur_temporaire = bombe_temporaire.joueur_poseur_bombe;
+
+            pile_t* cases_explosions_i;
+            pile_t* cases_explosions_j;
+            cases_explosions_i = init(12);
+            cases_explosions_i = init(12);
+
+            if(a_explose(bombe_temporaire, temps_pose_bombe, frameTime) == 1){
+                explosion_bombe(&carte, &bombe_temporaire, &joueur_temporaire, cases_explosions_i, cases_explosions_j);
+            }
+            SDL_Delay(1000);
+            nettoyage_cases_explosion(&carte, bombe_temporaire, *cases_explosions_i, *cases_explosions_j);
+            nb_bombes--;
+        }
+
         }
 
         positionJ2.x = player2X;
@@ -581,10 +574,26 @@ void affichage_jeu(map_t carte){
     // Libérer les ressources
     SDL_DestroyTexture(backgroundTexture);
     SDL_FreeSurface(backgroundSurface);
+
     SDL_DestroyTexture(playerTexture1);
+    SDL_DestroyTexture(playerTexture2);
     SDL_DestroyTexture(playerTexture2);
     SDL_FreeSurface(playerSurface1);
     SDL_FreeSurface(playerSurface2);
+
+    SDL_DestroyTexture(bombeTexture1);
+    SDL_DestroyTexture(bombeTexture2);
+    SDL_DestroyTexture(bombeTexture3);
+    SDL_FreeSurface(bombeSurface3);
+    SDL_FreeSurface(bombeSurface3);
+    SDL_FreeSurface(bombeSurface3);
+
+    SDL_DestroyTexture(wallTexture);
+    SDL_FreeSurface(wallSurface);
+
+    SDL_DestroyTexture(explosionTexture);
+    SDL_FreeSurface(explosionSurface);
+
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
